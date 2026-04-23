@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme {
+  --color-mystic-900: #1a0b2e;
+  --color-mystic-800: #2d1b4e;
+  --color-mystic-700: #432c7a;
+  --color-gold-500: #d4af37;
+  --color-gold-400: #e6c253;
+  --color-crimson-600: #8a0303;
+  --color-crimson-500: #b50b0b;
+  
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-serif: 'Cinzel', Georgia, serif;
+}
+
+@layer base {
+  body {
+    @apply bg-mystic-900 text-gray-100 font-sans min-h-screen selection:bg-gold-500 selection:text-mystic-900;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif text-gold-500 tracking-wide;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-mystic-800/60 backdrop-blur-md border border-mystic-700/50 shadow-xl;
+  }
+  
+  .card-preserve-3d {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+  
+  .card-backface-hidden {
+    backface-visibility: hidden;
+  }
+  
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+}
