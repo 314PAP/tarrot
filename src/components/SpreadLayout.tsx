@@ -23,20 +23,20 @@ interface SpreadLayoutProps {
            <div className="text-sm text-gold-400 font-serif text-center mb-2 px-2">
              {pos.label}
            </div>
-           <div className="w-[40%] sm:w-32 md:w-48 aspect-[2/3]">
-             {pos.card ? (
-               <Card
-                 card={pos.card}
-                 isFlipped={!pos.isHidden}
-                 onClick={() => onCardClick(pos.id)}
-                 className="w-full h-full"
-               />
-             ) : (
-               <div className="w-full h-full rounded-xl border border-gold-500/30 bg-mystic-900/50 flex items-center justify-center">
-                 <span className="text-mystic-600 font-serif text-xs">Prázdné</span>
-               </div>
-             )}
-           </div>
+            <div className="w-[40%] sm:w-32 md:w-48">
+              {pos.card ? (
+                <Card
+                  card={pos.card}
+                  isFlipped={!pos.isHidden}
+                  onClick={() => onCardClick(pos.id)}
+                  className="w-full aspect-[2/3]"
+                />
+              ) : (
+                <div className="w-full aspect-[2/3] rounded-xl border border-gold-500/30 bg-mystic-900/50 flex items-center justify-center">
+                  <span className="text-mystic-600 font-serif text-xs">Prázdné</span>
+                </div>
+              )}
+            </div>
          </div>
        ))}
      </div>

@@ -156,12 +156,9 @@ export const Card: React.FC<CardProps> = ({ card, isFlipped = false, onClick, cl
 
   return (
     <div 
-      className={cn("relative mx-auto rounded-xl border-2 border-gold-600/70 cursor-pointer transition-shadow hover:shadow-[0_0_30px_rgba(212,175,55,0.7)] w-full h-48 sm:h-64", className)} 
+      className={cn("relative mx-auto rounded-xl border-2 border-gold-600/70 cursor-pointer transition-shadow hover:shadow-[0_0_30px_rgba(212,175,55,0.7)] w-full h-full", className)} 
       onClick={handleClick}
-      style={{ 
-        maxWidth: '140px',
-        ...style 
-      }}
+      style={style}
     >
       <div className="relative w-full h-full" style={{ transformStyle: 'preserve-3d' }}>
         <div
