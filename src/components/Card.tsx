@@ -58,7 +58,6 @@ export const Card: React.FC<CardProps> = ({ card, isFlipped = false, onClick, cl
   const [flipped, setFlipped] = useState(isFlipped);
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 640);
@@ -90,59 +89,41 @@ export const Card: React.FC<CardProps> = ({ card, isFlipped = false, onClick, cl
   const titleInfo = getCardTitle();
 
   const cardBack = (
-    <div className="w-full h-full rounded-xl border-2 border-gold-600/80 shadow-[0_0_20px_rgba(212,175,55,0.4),inset_0_0_30px_rgba(212,175,55,0.1)] bg-mystic-900 overflow-hidden flex items-center justify-center">
-      <div className="w-[85%] h-[92%] border-2 border-gold-500/60 flex flex-col items-center justify-center relative">
-        <div className="w-14 h-14 sm:w-20 sm:h-20 border-2 border-gold-500 rotate-45 flex items-center justify-center bg-mystic-800/50">
-          <div className="w-full h-full border-2 border-gold-500 -rotate-45 flex items-center justify-center">
-             <span className="text-gold-500 font-serif font-bold text-[10px] sm:text-sm opacity-70">THOTH</span>
+    <div className="w-full h-full rounded-xl border-2 border-gold-500 shadow-[0_0_15px_rgba(212,175,55,0.3)] bg-mystic-800 overflow-hidden flex items-center justify-center">
+      <div className="w-[80%] h-[90%] border border-gold-500/50 flex flex-col items-center justify-center relative">
+        <div className="w-16 h-16 sm:w-24 sm:h-24 border-2 border-gold-400 rotate-45 flex items-center justify-center">
+          <div className="w-full h-full border-2 border-gold-400 -rotate-45 flex items-center justify-center">
+             <span className="text-gold-500 font-serif font-bold opacity-50">THOTH</span>
           </div>
         </div>
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gold-500/10 via-transparent to-transparent"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-mystic-700/20 via-transparent to-transparent"></div>
       </div>
     </div>
   );
 
   const cardFront = (
     <div 
-      className="w-full h-full rounded-xl border-2 border-gold-600/70 shadow-[0_0_25px_rgba(212,175,55,0.6),inset_0_0_20px_rgba(212,175,55,0.1)] bg-mystic-900 overflow-hidden flex flex-col relative group" 
-      onMouseEnter={() => !isMobile && setTooltipVisible(true)} 
-      onMouseLeave={() => !isMobile && setTooltipVisible(false)} 
+      className="w-full h-full rounded-xl border-2 border-gold-400 shadow-[0_0_20px_rgba(212,175,55,0.5)] bg-mystic-900 overflow-hidden flex flex-col relative"
+      onMouseEnter={() => !isMobile && setTooltipVisible(true)}
+      onMouseLeave={() => !isMobile && setTooltipVisible(false)}
       onClick={() => isMobile && setTooltipVisible(!tooltipVisible)}
     >
       {card ? (
         <>
-          <div className="relative flex-grow flex items-center justify-center bg-mystic-950">
-            {!imgError ? (
-              <img 
-                src={card.image} 
-                alt={card.name} 
-                className="w-full h-full object-contain"
-                onError={() => setImgError(true)}
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-mystic-900">
-                <div className="relative w-4/5 h-4/5 border-2 border-gold-600 rounded-lg flex items-center justify-center overflow-hidden">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gold-500/20 via-transparent to-transparent"></div>
-                  <div className="w-16 h-16 border-2 border-gold-500 rotate-45 flex items-center justify-center">
-                    <div className="w-full h-full border-2 border-gold-500 -rotate-45 flex items-center justify-center">
-                      <span className="text-gold-500 font-serif font-bold opacity-60 text-sm">✧</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+          <div className="relative flex-grow">
+            <img src={card.image} alt={card.name} className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-mystic-900 via-transparent to-transparent opacity-80"></div>
           </div>
-          <div className="absolute bottom-0 w-full p-3 sm:p-4 text-center bg-mystic-900/90 backdrop-blur-sm border-t border-gold-500/30">
+          <div className="absolute bottom-0 w-full p-3 sm:p-4 text-center glass-panel">
             <h3 className="text-sm sm:text-base font-serif text-gold-400 mb-1 leading-tight">{card.name}</h3>
             <p className="text-[10px] sm:text-xs text-gray-300 uppercase tracking-wider">{card.keywords.slice(0, 3).join(' • ')}</p>
           </div>
           {tooltipVisible && titleInfo.czName && (
-            <div className="absolute top-2 left-2 bg-[#1a0b2e] border border-gold-500/60 rounded-lg p-3 z-10 max-w-xs shadow-xl">
-              <div className="text-xs text-gold-400/70 mb-1">Český název</div>
+            <div className="absolute top-2 left-2 bg-[#1a0b2e] border border-gold-500/60 rounded-lg p-3 z-20 max-w-xs shadow-xl text-white">
+              <div className="text-xs text-gold-400/70 mb-1 uppercase tracking-wider">Český název</div>
               <div className="text-sm font-serif text-white mb-2">{titleInfo.czName}</div>
-              <div className="text-xs text-gold-400/70 mb-1">Význam</div>
-              <div className="text-xs text-white leading-relaxed">{titleInfo.meaning}</div>
+              <div className="text-xs text-gold-400/70 mb-1 uppercase tracking-wider">Význam</div>
+              <div className="text-xs text-gray-200 leading-relaxed">{titleInfo.meaning}</div>
             </div>
           )}
         </>
@@ -156,9 +137,9 @@ export const Card: React.FC<CardProps> = ({ card, isFlipped = false, onClick, cl
 
   return (
     <div 
-      className={cn("relative mx-auto rounded-xl border-2 border-gold-600/70 cursor-pointer transition-shadow hover:shadow-[0_0_30px_rgba(212,175,55,0.7)] w-full h-full", className)} 
+      className={cn("relative mx-auto max-w-[300px] rounded-xl border border-yellow-600/30 cursor-pointer", className)} 
       onClick={handleClick}
-      style={style}
+      style={{ width: '120px', height: 'auto', ...style }}
     >
       <div className="relative w-full h-full" style={{ transformStyle: 'preserve-3d' }}>
         <div
