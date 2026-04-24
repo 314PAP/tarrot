@@ -1,11 +1,11 @@
 import React from 'react';
-import { SpreadPosition } from '../logic/spreads';
-import { CardAnimation } from './CardAnimation';
+import type { SpreadPosition } from '../logic/spreads';
+import { Card } from './Card';
 
 interface SpreadLayoutProps {
   positions: SpreadPosition[];
   onCardClick: (positionId: string) => void;
-  layoutType?: 'grid' | 'flex'; // Zda chceme CSS Grid pro 15 karet nebo flex pro OOTK operace
+  layoutType?: 'grid' | 'flex';
 }
 
 export const SpreadLayout: React.FC<SpreadLayoutProps> = ({ 
@@ -44,7 +44,11 @@ export const SpreadLayout: React.FC<SpreadLayoutProps> = ({
               </div>
               <div className="w-24 h-40">
                 {pos.card ? (
-                  <CardAnimation card={pos.card} isHidden={pos.isHidden} />
+                  <Card 
+                    card={pos.card} 
+                    isFlipped={!pos.isHidden} 
+                    onClick={() => onCardClick(pos.id)}
+                  />
                 ) : (
                   <div className="w-full h-full rounded-xl border border-stone-700 bg-stone-900/50 flex items-center justify-center">
                     <span className="text-stone-600 font-serif text-sm">Prázdné</span>
@@ -72,7 +76,11 @@ export const SpreadLayout: React.FC<SpreadLayoutProps> = ({
           </div>
           <div className="w-24 h-40">
             {pos.card ? (
-              <CardAnimation card={pos.card} isHidden={pos.isHidden} />
+              <Card 
+                card={pos.card} 
+                isFlipped={!pos.isHidden} 
+                onClick={() => onCardClick(pos.id)}
+              />
             ) : (
               <div className="w-full h-full rounded-xl border border-stone-700 bg-stone-900/50" />
             )}

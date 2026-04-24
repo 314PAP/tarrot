@@ -1,5 +1,5 @@
-import { Spread } from './types';
-import { TarotCard } from '../../data/thothTarot';
+import type { Spread } from './types';
+import type { TarotCard } from '../../data/thothTarot';
 
 // Toto je pouze strukturální příprava pro velké OOTK (Opening of the Key) operace.
 // Plná implementace vyžaduje komplexní interakci pro výběr signifikátoru, přesouvání a počítání karet.

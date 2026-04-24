@@ -1,5 +1,5 @@
-import { Spread } from './types';
-import { TarotCard } from '../../data/thothTarot';
+import type { Spread } from './types';
+import type { TarotCard } from '../../data/thothTarot';
 
 export const singleCardSpread: Spread = {
   id: 'single',

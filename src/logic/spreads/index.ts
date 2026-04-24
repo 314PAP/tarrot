@@ -1,7 +1,7 @@
 import { fifteenCardSpread } from './fifteenCard';
 import { firstOperationSpread } from './operations';
 import { singleCardSpread, threeCardSpread } from './basicSpreads';
-import { Spread } from './types';
+import type { Spread } from './types';
 
 export const availableSpreads: Spread[] = [
   singleCardSpread,

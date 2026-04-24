@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { thothTarotDeck, type TarotCard } from '../data/thothTarot';
-import { Spread, SpreadPosition } from '../logic/spreads';
+import type { Spread, SpreadPosition } from '../logic/spreads';
 import { shuffleDeck } from '../utils/tarotLogic';
 
 export const useDeck = () => {

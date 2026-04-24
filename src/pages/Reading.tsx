@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useDeck } from '../hooks/useDeck';
 import { SpreadLayout } from '../components/SpreadLayout';
-import { availableSpreads, Spread } from '../logic/spreads';
+import { availableSpreads } from '../logic/spreads';
+import type { Spread } from '../logic/spreads';
 import { Sparkles, Layers, Grid, List } from 'lucide-react';
 
 export const Reading: React.FC = () => {

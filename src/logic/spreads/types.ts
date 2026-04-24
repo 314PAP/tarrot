@@ -1,4 +1,4 @@
-import { TarotCard } from '../../data/thothTarot';
+import type { TarotCard } from '../../data/thothTarot';
 
 export interface SpreadPosition {
   id: string; // Unikátní identifikátor pozice
