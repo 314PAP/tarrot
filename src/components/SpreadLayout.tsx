@@ -1,91 +1,84 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import type { TarotCard } from '../data/thothTarot';
-import { Card } from './Card';
-import { spreads, type SpreadType } from '../utils/tarotLogic';
+import { SpreadPosition } from '../logic/spreads';
+import { CardAnimation } from './CardAnimation';
 
 interface SpreadLayoutProps {
-  type: SpreadType;
-  cards: TarotCard[];
-  onDraw: () => void;
-  isDrawing: boolean;
+  positions: SpreadPosition[];
+  onCardClick: (positionId: string) => void;
+  layoutType?: 'grid' | 'flex'; // Zda chceme CSS Grid pro 15 karet nebo flex pro OOTK operace
 }
 
-export const SpreadLayout: React.FC<SpreadLayoutProps> = ({ type, cards, onDraw, isDrawing }) => {
-  const spreadPositions = spreads[type];
-  const isComplete = cards.length === spreadPositions.length;
-
-  return (
-    <div className="flex flex-col items-center w-full min-h-[60vh] py-8">
-      <div className="flex flex-wrap justify-center gap-8 md:gap-12 w-full max-w-5xl">
-        {spreadPositions.map((position, index) => {
-          const card = cards[index];
-          return (
-            <motion.div 
-              key={index}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.2 }}
-              className="flex flex-col items-center"
+export const SpreadLayout: React.FC<SpreadLayoutProps> = ({ 
+  positions, 
+  onCardClick,
+  layoutType = 'grid'
+}) => {
+  if (layoutType === 'grid') {
+    return (
+      <div className="w-full max-w-4xl mx-auto p-4 overflow-x-auto">
+        <div 
+          className="min-w-[600px] grid gap-4 p-4"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(5, 1fr)',
+            gridTemplateRows: 'repeat(5, auto)',
+            gridTemplateAreas: `
+              ". top-left-1 . top-right-1 ."
+              ". top-left-2 . top-right-2 ."
+              "center-1 top-left-3 center-2 top-right-3 center-3"
+              ". bottom-left-1 . bottom-right-1 ."
+              ". bottom-left-2 . bottom-right-2 ."
+              ". bottom-left-3 . bottom-right-3 ."
+            `
+          }}
+        >
+          {positions.map((pos) => (
+            <div 
+              key={pos.id} 
+              className="flex flex-col items-center justify-center relative cursor-pointer"
+              style={{ gridArea: pos.gridArea }}
+              onClick={() => onCardClick(pos.id)}
             >
-              <h4 className="text-gold-500 font-serif mb-4 text-center h-12 flex flex-col justify-end">
-                <span className="block text-lg">{position.name}</span>
-              </h4>
-              
-              <div className="relative">
-                {card ? (
-                  <Card card={card} isFlipped={true} />
+              <div className="text-xs text-stone-400 font-serif text-center mb-1 max-w-[100px] truncate">
+                {pos.label}
+              </div>
+              <div className="w-24 h-40">
+                {pos.card ? (
+                  <CardAnimation card={pos.card} isHidden={pos.isHidden} />
                 ) : (
-                  <div className="w-48 h-72 sm:w-64 sm:h-96 rounded-xl border-2 border-dashed border-mystic-700 bg-mystic-900/50 flex items-center justify-center">
-                    <span className="text-mystic-700 font-serif">Karta {index + 1}</span>
+                  <div className="w-full h-full rounded-xl border border-stone-700 bg-stone-900/50 flex items-center justify-center">
+                    <span className="text-stone-600 font-serif text-sm">Prázdné</span>
                   </div>
                 )}
               </div>
-              
-              <div className="mt-6 max-w-[200px] sm:max-w-[250px] text-center">
-                <p className="text-xs text-gray-400 italic mb-2">{position.meaning}</p>
-                {card && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.8 }}
-                  >
-                    <p className="text-sm text-gray-200">{card.meaning}</p>
-                  </motion.div>
-                )}
-              </div>
-            </motion.div>
-          );
-        })}
+            </div>
+          ))}
+        </div>
       </div>
+    );
+  }
 
-      {!isComplete && (
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={onDraw}
-          disabled={isDrawing}
-          className="mt-12 px-8 py-3 bg-mystic-800 border border-gold-500 text-gold-400 font-serif rounded hover:bg-gold-500 hover:text-mystic-900 transition-colors shadow-[0_0_15px_rgba(212,175,55,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
+  // Fallback pro OOTK nebo jednoduché lineární výklady
+  return (
+    <div className="flex flex-wrap gap-4 justify-center items-center w-full max-w-4xl mx-auto p-4">
+      {positions.map((pos) => (
+        <div 
+          key={pos.id} 
+          className="flex flex-col items-center cursor-pointer"
+          onClick={() => onCardClick(pos.id)}
         >
-          {isDrawing ? 'Míchání...' : `Táhnout kartu (${cards.length + 1}/${spreadPositions.length})`}
-        </motion.button>
-      )}
-      
-      {isComplete && (
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="mt-12 text-center"
-        >
-          <p className="text-gold-500 font-serif mb-4">Výklad je kompletní</p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="px-6 py-2 bg-transparent border border-mystic-700 text-gray-300 font-serif hover:border-gold-500 transition-colors"
-          >
-            Nový výklad
-          </button>
-        </motion.div>
-      )}
+          <div className="text-sm text-stone-400 font-serif mb-2 text-center">
+            {pos.label}
+          </div>
+          <div className="w-24 h-40">
+            {pos.card ? (
+              <CardAnimation card={pos.card} isHidden={pos.isHidden} />
+            ) : (
+              <div className="w-full h-full rounded-xl border border-stone-700 bg-stone-900/50" />
+            )}
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
