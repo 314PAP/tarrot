@@ -79,16 +79,16 @@ export const Encyclopedia: React.FC = () => {
 
       {/* Detail Modal */}
       {selectedCard && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-mystic-900/90 backdrop-blur-sm" onClick={() => setSelectedCard(null)}>
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 bg-mystic-900/90 backdrop-blur-sm" onClick={() => setSelectedCard(null)}>
           <div
-            className="bg-mystic-800 border border-gold-500/30 rounded-2xl p-6 max-w-4xl w-full flex flex-col md:flex-row gap-8 shadow-[0_0_30px_rgba(0,0,0,0.5)] overflow-y-auto max-h-[90vh]"
+            className="mt-4 mb-6 bg-mystic-800 border border-gold-500/30 rounded-2xl p-6 max-w-4xl w-full flex flex-col md:flex-row gap-8 shadow-[0_0_30px_rgba(0,0,0,0.5)] overflow-y-auto max-h-[90vh]"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="w-full md:w-1/2 flex justify-center flex-shrink-0">
               <Card card={selectedCard} isFlipped={true} className="w-64 h-96 md:w-80 md:h-[480px]" />
             </div>
 
-            <div className="w-full md:w-1/2 flex flex-col justify-center">
+            <div className="w-full md:w-1/2 flex flex-col justify-start pt-2 md:pt-4">
               <div className="mb-2 text-gold-500/70 text-sm tracking-widest uppercase font-semibold">
                 {selectedCard.type === 'Major' ? 'Velká Arkána' : `${selectedCard.suit}`}
               </div>

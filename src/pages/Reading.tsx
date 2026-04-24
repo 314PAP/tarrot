@@ -135,7 +135,7 @@ export const Reading: React.FC = () => {
           <button
             onClick={handleDeal}
             disabled={isDealing}
-            className="px-8 py-4 bg-gold-500 hover:bg-gold-400 text-mystic-950 font-bold rounded-xl font-serif text-lg shadow-lg shadow-gold-500/20 disabled:opacity-50 transition-all"
+            className="px-8 py-4 bg-gold-500 hover:bg-gold-400 text-mystic-900 font-bold rounded-xl font-serif text-lg shadow-lg shadow-gold-500/20 disabled:opacity-50 transition-all"
           >
             {isDealing ? 'Míchám...' : 'Vyložit karty'}
           </button>
@@ -150,7 +150,7 @@ export const Reading: React.FC = () => {
             <button
               onClick={() => setSummaryModalOpen(true)}
               disabled={visibleCards.length === 0}
-              className="px-6 py-3 bg-gold-500 hover:bg-gold-400 text-mystic-950 font-bold rounded-xl font-serif text-lg shadow-lg shadow-gold-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="px-6 py-3 bg-gold-500 hover:bg-gold-400 text-mystic-900 font-bold rounded-xl font-serif text-lg shadow-lg shadow-gold-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               Zobrazit celkový souhrn ({visibleCards.length})
             </button>
@@ -191,7 +191,7 @@ export const Reading: React.FC = () => {
                     return (
                       <div key={pos.id} className="relative pl-6 border-l-2 border-gold-500/50 mb-4 pb-4">
                         <div className="absolute -left-3 top-0 w-5 h-5 rounded-full bg-gold-500 flex items-center justify-center">
-                          <span className="text-mystic-950 text-xs font-bold">{index + 1}</span>
+                          <span className="text-mystic-900 text-xs font-bold">{index + 1}</span>
                         </div>
                         <div className="mb-2">
                           <span className="text-gold-400/70 text-sm font-semibold uppercase tracking-wider">
