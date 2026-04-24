@@ -11,12 +11,29 @@
       "element": "Air"
     },
     "keywords": {
-      "upright": ["Innocence", "Spontaneity", "Divine madness", "New beginnings", "Potential"],
-      "reversed": ["Folly", "Recklessness", "Chaos", "Instability", "Risk"]
+      "upright": [
+        "Innocence",
+        "Spontaneity",
+        "Divine madness",
+        "New beginnings",
+        "Potential"
+      ],
+      "reversed": [
+        "Folly",
+        "Recklessness",
+        "Chaos",
+        "Instability",
+        "Risk"
+      ]
     },
     "description": "Tato karta se přisuzuje písmeni Alef, které znamená „vůl“, ale svým obrysem (prý) hebrejské písmeno představuje radlici; takže význam je primárně falický. Je to první ze tří matek písmen – jsou jimi Alef, Mem a Šin – které korespondují různými úzce propojenými cestami se všemi triádami, které se na těchto kartách objevují, zejména je to Ohněn, Voda, Vzduch; Otec, Matka, Syn; Síra, Sůl, Rtuť; radžas, sattva a tamas.\n\nOpravdu důležitým rysem této karty je to, že jejím číslem by měla být 0. Zastupuje tedy negativno nad Stromem Života, zdroj všech věcí. Je to kabbalistická nula. Je to rovnice universa, počáteční a konečná rovnováha protikladů; proto tedy vzduch na této kartě kvintesenciálně zastupuje vakuum.\n\nV balíčku karet, který pochází ze středověku, má tato karta název Le Mat, a ten byl převzat z italského Matto, což jest pomatenec nebo blázen; o vhodnosti tohoto titulu budeme uvažovat později. Existuje však jiná, nebo (můžeme říci) komplementární teorie. Považujeme-li za samozřejmé, že tarot je egyptského původu, můžeme předpokládat, že Mat (tato karta je klíčovou kartou celého balíčku) opravdu zastupuje Maut, supí bohyni, která je starší a sublimnější modifikací ideje Nuith než (jak se běžně předpokládá) Isis.\n\nExistuje dvě legendy spojené s tímto supím božstvem. Má se za to, že má spirální krk; mohlo by to možná vztahovat k teorii (kterou nedávno vzkřísil Einstein, ale o níž se zmiňuje ve svých »Orákulech« již Zoroaster), že universum – forma oné energie, která se nazývá universum – má spirální tvar.\n\nV další legendě stojí, že sup prý obnovuje svůj druhprostřednictvím větru; jinými slovy, element vzduchu se považuje za otce celého projeveného bytí. Je tu podobnost s řeckou filosofií školy, která vychází z Anaximena.\n\nTato karta tedy zastupuje jak otce, tak i matku, a to v nejabstraktnější podobě těchto idejí. Není to nepořádek, nýbrž rozvážné ztotožnění mužství a ženství, které je biologicky oprávněné. Oplodněné vajíčko je sexuálně neutrální. Je to jen nějaký neznámý determinant, který během vývoje vajíčka rozhodne o výsledku.",
-    "paths": ["Kether → Chokmah"],
-    "cards": ["0", "Alef"]
+    "paths": [
+      "Kether → Chokmah"
+    ],
+    "cards": [
+      "0",
+      "Alef"
+    ]
   },
   {
     "number": 1,
@@ -30,12 +47,28 @@
       "element": "Air"
     },
     "keywords": {
-      "upright": ["Skill", "Resourcefulness", "Power of manifestation", "Willpower", "Action"],
-      "reversed": ["Manipulation", "Trickery", "Deception", "Misuse of power"]
+      "upright": [
+        "Skill",
+        "Resourcefulness",
+        "Power of manifestation",
+        "Willpower",
+        "Action"
+      ],
+      "reversed": [
+        "Manipulation",
+        "Trickery",
+        "Deception",
+        "Misuse of power"
+      ]
     },
     "description": "Zvláště pozoruhodné je na tom to, že tři za sebou jdoucí písmena – Gimel, Dalet, He (Atu II, III, XVII) – následují tři odpovídající a komplementární Otce: Vau, Cade, Jod (Atu IV, V, IX. Trumfy 0 a I jsou součástí další skupiny).\n\nReprezentuje primární tvůrčí sílu, Logos, a sílu transformace. Je to pán života, Nuit, Hadit, Ra-Hoor-Khuit. Je to káva kresolve, tentokráte jen magicky, nýbrž moudrost, šílenství, Statečnost a je to karty přirovnaly. Zna造.\n\nI. Mág b Bet 2 4 Dům 12",
-    "paths": ["Kether → Chokmah"],
-    "cards": ["1", "Bet"]
+    "paths": [
+      "Kether → Chokmah"
+    ],
+    "cards": [
+      "1",
+      "Bet"
+    ]
   },
   {
     "number": 2,
@@ -49,12 +82,28 @@
       "element": "Water"
     },
     "keywords": {
-      "upright": ["Intuition", "Mystery", "Hidden knowledge", "Revelation", "Secret"],
-      "reversed": ["Secrecy", "Isolation", "Withheld truth", "Confusion"]
+      "upright": [
+        "Intuition",
+        "Mystery",
+        "Hidden knowledge",
+        "Revelation",
+        "Secret"
+      ],
+      "reversed": [
+        "Secrecy",
+        "Isolation",
+        "Withheld truth",
+        "Confusion"
+      ]
     },
     "description": "II. VELEKNĚŽKA g Gimel 3 3 Velbloud 13. Představuje Velkou Bohyni, Isis, nevěstku tajemství. Je to ženská stránka Boží, moon. Na tradiční kartě je toto přestrojení přestrojením Kejklíře. Takový výklad Kejklíře je ve středověkém.",
-    "paths": ["Kether → Binah"],
-    "cards": ["2", "Gimel"]
+    "paths": [
+      "Kether → Binah"
+    ],
+    "cards": [
+      "2",
+      "Gimel"
+    ]
   },
   {
     "number": 3,
@@ -68,12 +117,28 @@
       "element": "Earth"
     },
     "keywords": {
-      "upright": ["Abundance", "Fertility", "Beauty", "Creativity", "Nurturing"],
-      "reversed": ["Stagnation", "Possessiveness", "Barrenness", "Insecurity"]
+      "upright": [
+        "Abundance",
+        "Fertility",
+        "Beauty",
+        "Creativity",
+        "Nurturing"
+      ],
+      "reversed": [
+        "Stagnation",
+        "Possessiveness",
+        "Barrenness",
+        "Insecurity"
+      ]
     },
     "description": "III. CÍSAŘOVNA d Dalet 4 5 Dveře 14. Představuje ženskou stránku Boského,并使. Je to Venus, Ishtar, Astarte. Na této kartě je však atribut poněkud odlišný. Sfinx se skládá ze čtyř cherubů, které vidíme na Atu V – býka.",
-    "paths": ["Chokmah → Binah"],
-    "cards": ["3", "Dalet"]
+    "paths": [
+      "Chokmah → Binah"
+    ],
+    "cards": [
+      "3",
+      "Dalet"
+    ]
   },
   {
     "number": 4,
@@ -87,12 +152,28 @@
       "element": "Fire"
     },
     "keywords": {
-      "upright": ["Authority", "Structure", "Willpower", "Leadership", "Control"],
-      "reversed": ["Tyranny", "Rigidity", "Domination", "Inflexibility"]
+      "upright": [
+        "Authority",
+        "Structure",
+        "Willpower",
+        "Leadership",
+        "Control"
+      ],
+      "reversed": [
+        "Tyranny",
+        "Rigidity",
+        "Domination",
+        "Inflexibility"
+      ]
     },
     "description": "IV. CÍSAŘ c 5 Cade 90, 900 \" Udice 28. Císař je také jednou z nejdůležitějších alchymických karet; společně s Atu II a III vytváří triádu: Síra, Sůl, Rtuť.",
-    "paths": ["Chokmah → Binah"],
-    "cards": ["4", "He"]
+    "paths": [
+      "Chokmah → Binah"
+    ],
+    "cards": [
+      "4",
+      "He"
+    ]
   },
   {
     "number": 5,
@@ -106,12 +187,28 @@
       "element": "Earth"
     },
     "keywords": {
-      "upright": ["Tradition", "Teaching", "Ritual", "Spiritual guidance", "Conformity"],
-      "reversed": ["Dogmatism", "Hypocrisy", "Empty ritual", "Rebellion"]
+      "upright": [
+        "Tradition",
+        "Teaching",
+        "Ritual",
+        "Spiritual guidance",
+        "Conformity"
+      ],
+      "reversed": [
+        "Dogmatism",
+        "Hypocrisy",
+        "Empty ritual",
+        "Rebellion"
+      ]
     },
     "description": "V. HIEROFANT w Vau 6 # Hřeb 16. Hierofant je karta vědy a moudrosti. Představuje Goethe – Zöllner, experimentátora. Je to blessus otcem, the cornu. \"The path of the middle pillar. Je to karta původu a budoucna věcí; a ta řekne.\"",
-    "paths": ["Chesed → Binah"],
-    "cards": ["5", "Vau"]
+    "paths": [
+      "Chesed → Binah"
+    ],
+    "cards": [
+      "5",
+      "Vau"
+    ]
   },
   {
     "number": 6,
@@ -125,12 +222,28 @@
       "element": "Air"
     },
     "keywords": {
-      "upright": ["Union", "Love", "Choice", "Harmony", "Connection"],
-      "reversed": ["Disharmony", "Separation", "Temptation", "Misalignment"]
+      "upright": [
+        "Union",
+        "Love",
+        "Choice",
+        "Harmony",
+        "Connection"
+      ],
+      "reversed": [
+        "Disharmony",
+        "Separation",
+        "Temptation",
+        "Misalignment"
+      ]
     },
     "description": "VI. MILENCI [NEBO: BRATŘI] z Zain 7 $ Meč1 7. Představuje dvojici zálibu. Guny v evropské filosofii představují tři kvality: Síru, Sůl a Rtuť, a ty již byly zobrazeny na Atu I, III a IV. Bylo to hlavní téma v 18. století.",
-    "paths": ["Tiferet → Binah"],
-    "cards": ["6", "Zain"]
+    "paths": [
+      "Tiferet → Binah"
+    ],
+    "cards": [
+      "6",
+      "Zain"
+    ]
   },
   {
     "number": 7,
@@ -144,12 +257,28 @@
       "element": "Water"
     },
     "keywords": {
-      "upright": ["Triumph", "Willpower", "Control", "Movement", "Direction"],
-      "reversed": ["Lack of control", "Defeat", "Aggression", "Disruption"]
+      "upright": [
+        "Triumph",
+        "Willpower",
+        "Control",
+        "Movement",
+        "Direction"
+      ],
+      "reversed": [
+        "Lack of control",
+        "Defeat",
+        "Aggression",
+        "Disruption"
+      ]
     },
     "description": "VII. VÁLEČNÝ VŮZ x Chet 8 % Opevnění 18. Rytíř Pohárů zosobňuje ohnivou část Vody, náhlý prudký příval dešťů a výtrysk pramenů; bližší výklad.",
-    "paths": ["Tiferet → Netzach"],
-    "cards": ["7", "Chet"]
+    "paths": [
+      "Tiferet → Netzach"
+    ],
+    "cards": [
+      "7",
+      "Chet"
+    ]
   },
   {
     "number": 8,
@@ -163,12 +292,27 @@
       "element": "Fire"
     },
     "keywords": {
-      "upright": ["Courage", "Inner strength", "Patience", "Compassion"],
-      "reversed": ["Weakness", "Insecurity", "Anger", "Self-doubt"]
+      "upright": [
+        "Courage",
+        "Inner strength",
+        "Patience",
+        "Compassion"
+      ],
+      "reversed": [
+        "Weakness",
+        "Insecurity",
+        "Anger",
+        "Self-doubt"
+      ]
     },
     "description": "VIII. VYROVNÁNÍ l Lamed 30 ( Bodec na pohánění volů 22. Reprezentuje sílu ducha nad hmotou. Má mezi mnohoSlova: \"Velká síla a světlo.\"",
-    "paths": ["Netzach → Hod"],
-    "cards": ["8", "Teth"]
+    "paths": [
+      "Netzach → Hod"
+    ],
+    "cards": [
+      "8",
+      "Teth"
+    ]
   },
   {
     "number": 9,
@@ -182,13 +326,28 @@
       "element": "Earth"
     },
     "keywords": {
-      "upright": ["Solitude", "Introspection", "Guidance", "Wisdom", "Search"],
-      "reversed": ["Isolation", "Withdrawal", "Lack of direction", "Loneliness"]
+      "upright": [
+        "Solitude",
+        "Introspection",
+        "Guidance",
+        "Wisdom",
+        "Search"
+      ],
+      "reversed": [
+        "Isolation",
+        "Withdrawal",
+        "Lack of direction",
+        "Loneliness"
+      ]
     },
-    "description": "IX. POUSTEVNÍK y Jod 10 ' Ruka 20. Vede ženu,.
-Cestující cesta, kuje sám sebe příliš další. Vyzývá k jeho červenej.",
-    "paths": ["Hod → Yesod"],
-    "cards": ["9", "Yod"]
+    "description": "IX. POUSTEVNÍK y Jod 10 ' Ruka 20. Vede ženu, cestující cesta, kuje sám sebe příliš další. Vyzývá k jeho červenej.",
+    "paths": [
+      "Hod → Yesod"
+    ],
+    "cards": [
+      "9",
+      "Yod"
+    ]
   },
   {
     "number": 10,
@@ -202,12 +361,28 @@ Cestující cesta, kuje sám sebe příliš další. Vyzývá k jeho červenej."
       "element": "Fire"
     },
     "keywords": {
-      "upright": ["Fate", "Cycles", "Destiny", "Opportunity", "Change"],
-      "reversed": ["Bad luck", "Resistance to change", "Stagnation", "Misfortune"]
+      "upright": [
+        "Fate",
+        "Cycles",
+        "Destiny",
+        "Opportunity",
+        "Change"
+      ],
+      "reversed": [
+        "Bad luck",
+        "Resistance to change",
+        "Stagnation",
+        "Misfortune"
+      ]
     },
     "description": "X. ŠTĚSTĚNA k 1 Kaf 20, 500 7 Dlaň 21. Vožská, jako",
-    "paths": ["Yesod → Netzach"],
-    "cards": ["10", "Kaf"]
+    "paths": [
+      "Yesod → Netzach"
+    ],
+    "cards": [
+      "10",
+      "Kaf"
+    ]
   },
   {
     "number": 11,
@@ -221,12 +396,27 @@ Cestující cesta, kuje sám sebe příliš další. Vyzývá k jeho červenej."
       "element": "Water"
     },
     "keywords": {
-      "upright": ["Desire", "Passion", "Power", "Strength"],
-      "reversed": ["Lustful", "Obsession", "Addiction", "Weakness"]
+      "upright": [
+        "Desire",
+        "Passion",
+        "Power",
+        "Strength"
+      ],
+      "reversed": [
+        "Lustful",
+        "Obsession",
+        "Addiction",
+        "Weakness"
+      ]
     },
     "description": "XI. CHTÍČ f Tet 9 & Had 19. Náprava.",
-    "paths": ["Geburah → Tiferet"],
-    "cards": ["11", "Tet"]
+    "paths": [
+      "Geburah → Tiferet"
+    ],
+    "cards": [
+      "11",
+      "Tet"
+    ]
   },
   {
     "number": 12,
@@ -240,13 +430,27 @@ Cestující cesta, kuje sám sebe příliš další. Vyzývá k jeho červenej."
       "element": "Water"
     },
     "keywords": {
-      "upright": ["Sacrifice", "Enlightenment", "Letting go", "Perspective"],
-      "reversed": ["Stagnation", "Martyrdom", "Pointless suffering", "Self-pity"]
+      "upright": [
+        "Sacrifice",
+        "Enlightenment",
+        "Letting go",
+        "Perspective"
+      ],
+      "reversed": [
+        "Stagnation",
+        "Martyrdom",
+        "Pointless suffering",
+        "Self-pity"
+      ]
     },
-    "description": "XII. VISELEC m 2 Mem 40, 600 1 Voda 23. Stojící,,
-mnohé bude mít. Rue.",
-    "paths": ["Yesod → Hod"],
-    "cards": ["12", "Lamed"]
+    "description": "XII. VISELEC m 2 Mem 40, 600 1 Voda 23. Stojící,, mnohé bude mít. Rue.",
+    "paths": [
+      "Yesod → Hod"
+    ],
+    "cards": [
+      "12",
+      "Lamed"
+    ]
   },
   {
     "number": 13,
@@ -260,12 +464,27 @@ mnohé bude mít. Rue.",
       "element": "Water"
     },
     "keywords": {
-      "upright": ["Transformation", "Endings", "Rebirth", "Change"],
-      "reversed": ["Stagnation", "Fear of change", "Decay", "Resistance"]
+      "upright": [
+        "Transformation",
+        "Endings",
+        "Rebirth",
+        "Change"
+      ],
+      "reversed": [
+        "Stagnation",
+        "Fear of change",
+        "Decay",
+        "Resistance"
+      ]
     },
     "description": "XIII. SMRT n 3 Nun 50, 700 ) Ryba 24. Červený Lev",
-    "paths": ["Hod → Geburah"],
-    "cards": ["13", "Nun"]
+    "paths": [
+      "Hod → Geburah"
+    ],
+    "cards": [
+      "13",
+      "Nun"
+    ]
   },
   {
     "number": 14,
@@ -279,12 +498,28 @@ mnohé bude mít. Rue.",
       "element": "Fire"
     },
     "keywords": {
-      "upright": ["Balance", "Moderation", "Alchemy", "Healing", "Patience"],
-      "reversed": ["Excess", "Imbalance", "Recklessness", "Overindulgence"]
+      "upright": [
+        "Balance",
+        "Moderation",
+        "Alchemy",
+        "Healing",
+        "Patience"
+      ],
+      "reversed": [
+        "Excess",
+        "Imbalance",
+        "Recklessness",
+        "Overindulgence"
+      ]
     },
     "description": "XIV. UMĚNÍ s Samek 60 * Kůl2 5",
-    "paths": ["Geburah → Tiferet"],
-    "cards": ["14", "Samek"]
+    "paths": [
+      "Geburah → Tiferet"
+    ],
+    "cards": [
+      "14",
+      "Samek"
+    ]
   },
   {
     "number": 15,
@@ -298,12 +533,27 @@ mnohé bude mít. Rue.",
       "element": "Earth"
     },
     "keywords": {
-      "upright": ["Materialism", "Bondage", "Temptation", "Shadow self"],
-      "reversed": ["Liberation", "Breaking free", "Enlightenment", "Detachment"]
+      "upright": [
+        "Materialism",
+        "Bondage",
+        "Temptation",
+        "Shadow self"
+      ],
+      "reversed": [
+        "Liberation",
+        "Breaking free",
+        "Enlightenment",
+        "Detachment"
+      ]
     },
     "description": "XV. ĎÁBEL j Ajin 70 + Oko 26. Komentátoři šípů.",
-    "paths": ["Netzach → Hod"],
-    "cards": ["15", "Ajin"]
+    "paths": [
+      "Netzach → Hod"
+    ],
+    "cards": [
+      "15",
+      "Ajin"
+    ]
   },
   {
     "number": 16,
@@ -317,12 +567,28 @@ mnohé bude mít. Rue.",
       "element": "Air"
     },
     "keywords": {
-      "upright": ["Sudden change", "Upheaval", "Destruction", "Revelation", "Awakening"],
-      "reversed": ["Disaster", "Chaos", "Resistance to change", "Avoidance"]
+      "upright": [
+        "Sudden change",
+        "Upheaval",
+        "Destruction",
+        "Revelation",
+        "Awakening"
+      ],
+      "reversed": [
+        "Disaster",
+        "Chaos",
+        "Resistance to change",
+        "Avoidance"
+      ]
     },
     "description": "XVI. VĚŽ (VÁLKA) p 4 Pé 80, 800 6 Ústa 27.",
-    "paths": ["Netzach → Hod"],
-    "cards": ["16", "Pe"]
+    "paths": [
+      "Netzach → Hod"
+    ],
+    "cards": [
+      "16",
+      "Pe"
+    ]
   },
   {
     "number": 17,
@@ -336,12 +602,28 @@ mnohé bude mít. Rue.",
       "element": "Air"
     },
     "keywords": {
-      "upright": ["Hope", "Inspiration", "Healing", "Guidance", "Renewal"],
-      "reversed": ["Despair", "Confusion", "Lack of faith", "Disillusion"]
+      "upright": [
+        "Hope",
+        "Inspiration",
+        "Healing",
+        "Guidance",
+        "Renewal"
+      ],
+      "reversed": [
+        "Despair",
+        "Confusion",
+        "Lack of faith",
+        "Disillusion"
+      ]
     },
     "description": "XVII. HVĚZDA h He 5 , Okno 15. Nuit, Hadit, Ra-Hoor-Khuit. Všechny[a]",
-    "paths": ["Netzach → Tiferet"],
-    "cards": ["17", "He"]
+    "paths": [
+      "Netzach → Tiferet"
+    ],
+    "cards": [
+      "17",
+      "He"
+    ]
   },
   {
     "number": 18,
@@ -355,12 +637,28 @@ mnohé bude mít. Rue.",
       "element": "Water"
     },
     "keywords": {
-      "upright": ["Illusion", "Intuition", "Dreams", "Subconscious", "Anxiety"],
-      "reversed": ["Deception", "Confusion", "Fear", "Misunderstanding"]
+      "upright": [
+        "Illusion",
+        "Intuition",
+        "Dreams",
+        "Subconscious",
+        "Anxiety"
+      ],
+      "reversed": [
+        "Deception",
+        "Confusion",
+        "Fear",
+        "Misunderstanding"
+      ]
     },
     "description": "XVIII. LUNA q Qof 100 - Temeno 29.",
-    "paths": ["Tiferet → Yesod"],
-    "cards": ["18", "Qof"]
+    "paths": [
+      "Tiferet → Yesod"
+    ],
+    "cards": [
+      "18",
+      "Qof"
+    ]
   },
   {
     "number": 19,
@@ -374,12 +672,28 @@ mnohé bude mít. Rue.",
       "element": "Fire"
     },
     "keywords": {
-      "upright": ["Joy", "Vitality", "Success", "Enlightenment", "Clarity"],
-      "reversed": ["Arrogance", "Burnout", "False glory", "Ego"]
+      "upright": [
+        "Joy",
+        "Vitality",
+        "Success",
+        "Enlightenment",
+        "Clarity"
+      ],
+      "reversed": [
+        "Arrogance",
+        "Burnout",
+        "False glory",
+        "Ego"
+      ]
     },
     "description": "XIX. SLUNCE r Reš 200 2 Hlava 30.",
-    "paths": ["Yesod → Malkuth"],
-    "cards": ["19", "Resh"]
+    "paths": [
+      "Yesod → Malkuth"
+    ],
+    "cards": [
+      "19",
+      "Resh"
+    ]
   },
   {
     "number": 20,
@@ -393,12 +707,27 @@ mnohé bude mít. Rue.",
       "element": "Water"
     },
     "keywords": {
-      "upright": ["Rebirth", "Awakening", "Reckoning", "Calling"],
-      "reversed": ["Guilt", "Regret", "Missed opportunity", "Doubt"]
+      "upright": [
+        "Rebirth",
+        "Awakening",
+        "Reckoning",
+        "Calling"
+      ],
+      "reversed": [
+        "Guilt",
+        "Regret",
+        "Missed opportunity",
+        "Doubt"
+      ]
     },
     "description": "XX. AEON v Šin 300 / Zuby 3 1.",
-    "paths": ["Yesod → Malkuth"],
-    "cards": ["20", "Shin"]
+    "paths": [
+      "Yesod → Malkuth"
+    ],
+    "cards": [
+      "20",
+      "Shin"
+    ]
   },
   {
     "number": 21,
@@ -412,11 +741,25 @@ mnohé bude mít. Rue.",
       "element": "Earth"
     },
     "keywords": {
-      "upright": ["Completion", "Integration", "Fulfillment", "Wholeness"],
-      "reversed": ["Incompletion", "Lack of closure", "Disconnected"]
+      "upright": [
+        "Completion",
+        "Integration",
+        "Fulfillment",
+        "Wholeness"
+      ],
+      "reversed": [
+        "Incompletion",
+        "Lack of closure",
+        "Disconnected"
+      ]
     },
     "description": "XXI. UNIVERZUM t Tau 400 8 Tau (egyptské) 32.",
-    "paths": ["Malkuth → Kether"],
-    "cards": ["21", "Tau"]
+    "paths": [
+      "Malkuth → Kether"
+    ],
+    "cards": [
+      "21",
+      "Tau"
+    ]
   }
 ]
