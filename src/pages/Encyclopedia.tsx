@@ -4,13 +4,6 @@ import { Card } from '../components/Card';
 import { Search, Filter } from 'lucide-react';
 import type { TarotCard } from '../data/thothTarot';
 
-const suitCzech: Record<string, string> = {
-  'Wands': 'Holí',
-  'Cups': 'Pohárů',
-  'Swords': 'Mečů',
-  'Disks': 'Disku'
-} as const;
-
 export const Encyclopedia: React.FC = () => {
   const { query, setQuery, suitFilter, setSuitFilter, filteredCards } = useSearch();
   const [selectedCard, setSelectedCard] = useState<TarotCard | null>(null);
@@ -107,6 +100,17 @@ export const Encyclopedia: React.FC = () => {
               <h2 className="text-3xl md:text-4xl font-serif text-gold-400 mb-6">{selectedCard.name}</h2>
 
               <div className="mb-6">
+                <h3 className="text-lg text-gray-300 mb-2 font-serif border-b border-mystic-700 pb-1">Klíčová slova</h3>
+                <div className="flex flex-wrap gap-2">
+                  {selectedCard.keywords.map((kw, i) => (
+                    <span key={i} className="px-3 py-1 bg-mystic-700/50 rounded-full text-sm text-gold-100 border border-mystic-600">
+                      {kw}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div>
                 <h3 className="text-lg text-gray-300 mb-2 font-serif border-b border-mystic-700 pb-1">Význam</h3>
                 <p className="text-gray-400 leading-relaxed">
                   {selectedCard.meaning}
@@ -114,32 +118,6 @@ export const Encyclopedia: React.FC = () => {
                 <p className="text-gray-500 text-sm mt-4 italic">
                   Poznámka: Thoth tarot je hluboce symbolický. Doporučujeme meditovat nad zobrazenými symboly pro hlubší osobní vhled.
                 </p>
-              </div>
-
-              <div className="mb-6">
-                <h3 className="text-lg text-gray-300 mb-3 font-serif border-b border-mystic-700 pb-1">Souhrn výkladu</h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center py-2 border-b border-mystic-700/50">
-                    <span className="text-gray-400 text-sm">Pozice</span>
-                    <span className="text-gold-400 font-serif">
-                      {selectedCard.type === 'Major' ? 'Velká Arkána' : selectedCard.type === 'Minor' 
-                        ? `${selectedCard.number || 1} ${suitCzech[selectedCard.suit] || selectedCard.suit}`
-                        : selectedCard.type === 'Court'
-                        ? selectedCard.name
-                        : selectedCard.type}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-mystic-700/50">
-                    <span className="text-gray-400 text-sm">Český název</span>
-                    <span className="text-gold-300">{selectedCard.name}</span>
-                  </div>
-                  <div className="flex justify-between items-start py-2">
-                    <span className="text-gray-400 text-sm">Krátký význam</span>
-                    <span className="text-gray-300 text-sm text-right ml-4">
-                      {selectedCard.meaning.split('.')[0] || selectedCard.meaning.slice(0, 100)}...
-                    </span>
-                  </div>
-                </div>
               </div>
 
               <button
