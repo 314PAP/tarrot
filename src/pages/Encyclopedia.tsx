@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { useSearch } from '../hooks/useSearch';
 import { Card } from '../components/Card';
 import { Search, Filter } from 'lucide-react';
@@ -58,12 +57,9 @@ export const Encyclopedia: React.FC = () => {
       <div className="flex-grow">
         {filteredCards.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {filteredCards.map((card, index) => (
-              <motion.div
+            {filteredCards.map((card) => (
+              <div
                 key={card.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.5) }}
                 className="flex flex-col items-center group cursor-pointer"
                 onClick={() => setSelectedCard(card)}
               >
@@ -74,7 +70,7 @@ export const Encyclopedia: React.FC = () => {
                     <span className="text-xs sm:text-sm font-serif text-gold-400 font-bold block truncate px-1">{card.name}</span>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         ) : (
@@ -89,23 +85,20 @@ export const Encyclopedia: React.FC = () => {
       {/* Detail Modal */}
       {selectedCard && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-mystic-900/90 backdrop-blur-sm" onClick={() => setSelectedCard(null)}>
-          <motion.div 
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
+          <div
             className="bg-mystic-800 border border-gold-500/30 rounded-2xl p-6 max-w-4xl w-full flex flex-col md:flex-row gap-8 shadow-[0_0_30px_rgba(0,0,0,0.5)] overflow-y-auto max-h-[90vh]"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="w-full md:w-1/2 flex justify-center flex-shrink-0">
               <Card card={selectedCard} isFlipped={true} className="w-64 h-96 md:w-80 md:h-[480px]" />
             </div>
-            
+
             <div className="w-full md:w-1/2 flex flex-col justify-center">
               <div className="mb-2 text-gold-500/70 text-sm tracking-widest uppercase font-semibold">
                 {selectedCard.type === 'Major' ? 'Velká Arkána' : `${selectedCard.suit}`}
               </div>
               <h2 className="text-3xl md:text-4xl font-serif text-gold-400 mb-6">{selectedCard.name}</h2>
-              
+
               <div className="mb-6">
                 <h3 className="text-lg text-gray-300 mb-2 font-serif border-b border-mystic-700 pb-1">Klíčová slova</h3>
                 <div className="flex flex-wrap gap-2">
@@ -116,7 +109,7 @@ export const Encyclopedia: React.FC = () => {
                   ))}
                 </div>
               </div>
-              
+
               <div>
                 <h3 className="text-lg text-gray-300 mb-2 font-serif border-b border-mystic-700 pb-1">Význam</h3>
                 <p className="text-gray-400 leading-relaxed">
@@ -127,14 +120,14 @@ export const Encyclopedia: React.FC = () => {
                 </p>
               </div>
 
-              <button 
+              <button
                 onClick={() => setSelectedCard(null)}
                 className="mt-8 self-start px-6 py-2 border border-gold-500/50 text-gold-400 rounded hover:bg-gold-500/10 transition-colors"
               >
                 Zavřít
               </button>
             </div>
-          </motion.div>
+          </div>
         </div>
       )}
     </div>

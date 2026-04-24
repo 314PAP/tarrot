@@ -5,7 +5,6 @@ interface CardAnimationProps {
   front: React.ReactNode;
   back: React.ReactNode;
   className?: string;
-  delay?: number;
 }
 
 export const CardAnimation: React.FC<CardAnimationProps> = ({
@@ -17,7 +16,7 @@ export const CardAnimation: React.FC<CardAnimationProps> = ({
   return (
     <div className={`relative w-full h-full ${className || ''}`}>
       <div
-        className="w-full h-full transition-transform duration-600"
+        className="w-full h-full"
         style={{
           transformStyle: 'preserve-3d',
           perspective: '1000px',
@@ -40,7 +39,7 @@ export const CardAnimation: React.FC<CardAnimationProps> = ({
           className="absolute inset-0 w-full h-full transition-opacity duration-300"
           style={{
             backfaceVisibility: 'hidden',
-            transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+            transform: isFlipped ? 'rotateY(0deg)' : 'rotateY(180deg)',
             opacity: isFlipped ? 1 : 0,
           }}
         >

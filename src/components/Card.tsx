@@ -13,10 +13,9 @@ interface CardProps {
   isFlipped?: boolean;
   onClick?: () => void;
   className?: string;
-  delay?: number;
 }
 
-export const Card: React.FC<CardProps> = ({ card, isFlipped = false, onClick, className, delay = 0 }) => {
+export const Card: React.FC<CardProps> = ({ card, isFlipped = false, onClick, className }) => {
   const [flipped, setFlipped] = useState(isFlipped);
 
   const handleClick = () => {
@@ -71,7 +70,6 @@ export const Card: React.FC<CardProps> = ({ card, isFlipped = false, onClick, cl
     >
       <CardAnimation 
         isFlipped={currentFlipped} 
-        delay={delay}
         back={cardBack}
         front={cardFront}
       />
