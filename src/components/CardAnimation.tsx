@@ -1,11 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
 
 interface CardAnimationProps {
   isFlipped: boolean;
@@ -20,26 +13,40 @@ export const CardAnimation: React.FC<CardAnimationProps> = ({
   front,
   back,
   className,
-  delay = 0
 }) => {
   return (
-    <div className={cn("relative w-full h-full card-preserve-3d", className)}>
-      <motion.div
-        className="w-full h-full card-preserve-3d"
-        initial={false}
-        animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{ duration: 0.6, type: "spring", stiffness: 260, damping: 20, delay }}
+    <div className={`relative w-full h-full ${className || ''}`}>
+      <div
+        className="w-full h-full transition-transform duration-600"
+        style={{
+          transformStyle: 'preserve-3d',
+          perspective: '1000px',
+        }}
       >
         {/* Card Back */}
-        <div className="absolute inset-0 w-full h-full card-backface-hidden">
+        <div
+          className="absolute inset-0 w-full h-full transition-opacity duration-300"
+          style={{
+            backfaceVisibility: 'hidden',
+            transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+            opacity: isFlipped ? 0 : 1,
+          }}
+        >
           {back}
         </div>
 
         {/* Card Front */}
-        <div className="absolute inset-0 w-full h-full card-backface-hidden rotate-y-180">
+        <div
+          className="absolute inset-0 w-full h-full transition-opacity duration-300"
+          style={{
+            backfaceVisibility: 'hidden',
+            transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+            opacity: isFlipped ? 1 : 0,
+          }}
+        >
           {front}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };
