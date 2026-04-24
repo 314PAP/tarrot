@@ -10,11 +10,10 @@ interface SpreadLayoutProps {
 
 export const SpreadLayout: React.FC<SpreadLayoutProps> = ({
   positions,
-  onCardClick,
-  layoutType = 'grid'
+  onCardClick
 }) => {
   return (
-    <div className="flex flex-wrap justify-center gap-6 p-4">
+    <div className="flex flex-wrap gap-4 justify-center p-4">
       {positions.map((pos) => (
         <div
           key={pos.id}

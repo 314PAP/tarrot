@@ -35,36 +35,43 @@ export const Home: React.FC = () => {
         </p>
       </div>
 
-      <div className="flex-grow flex flex-col items-center justify-center w-full max-w-md">
+       <div className="flex-grow flex items-center justify-center w-full">
         {dailyCard && (
-          <div className="flex flex-col items-center">
-            <Card
-              card={dailyCard}
-              isFlipped={isFlipped}
-              onClick={() => setIsFlipped(!isFlipped)}
-              className="mb-6"
-            />
-
-            {isFlipped && (
-              <div className="w-full max-w-sm px-4 mb-6">
-                <div className="bg-mystic-800/60 backdrop-blur-md border border-mystic-700/50 rounded-xl p-4 shadow-xl">
-                  <h3 className="text-gold-400 font-serif mb-2 text-lg border-b border-mystic-700/50 pb-2">
-                    {dailyCard.name}
-                  </h3>
-                  <p className="text-sm text-gray-300 leading-relaxed text-justify">
-                    {dailyCard.meaning}
-                  </p>
-                </div>
+          <div className="w-full max-w-4xl px-4">
+            <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6">
+              <div className="flex-shrink-0">
+                <Card
+                  card={dailyCard}
+                  isFlipped={isFlipped}
+                  onClick={() => setIsFlipped(!isFlipped)}
+                  style={{ '--card-max-h': '45vh' } as any}
+                  className="w-auto" 
+                />
               </div>
-            )}
 
-            <button
-              onClick={handleNewCard}
-              className="flex items-center gap-2 px-6 py-3 bg-gold-600 hover:bg-gold-500 text-mystic-950 font-bold rounded-xl font-serif text-lg shadow-lg shadow-gold-500/20 transition-all mb-8"
-            >
-              <Sparkles className="w-5 h-5" />
-              Tah Karu
-            </button>
+              {isFlipped && (
+                <div className="w-full lg:flex-1">
+                  <div className="bg-mystic-800/60 backdrop-blur-md border border-mystic-700/50 rounded-xl p-6 shadow-xl">
+                    <h3 className="text-gold-400 font-serif mb-3 text-xl lg:text-2xl border-b border-mystic-700/50 pb-3">
+                      {dailyCard.name}
+                    </h3>
+                    <p className="text-gray-300 text-base lg:text-lg leading-relaxed">
+                      {dailyCard.meaning}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-center mt-8">
+              <button
+                onClick={handleNewCard}
+                className="flex items-center gap-2 px-6 py-3 bg-gold-600 hover:bg-gold-500 text-mystic-950 font-bold rounded-xl font-serif text-lg shadow-lg shadow-gold-500/20 transition-all"
+              >
+                <Sparkles className="w-5 h-5" />
+                Tah Karu
+              </button>
+            </div>
           </div>
         )}
       </div>

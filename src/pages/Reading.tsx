@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { useDeck } from '../hooks/useDeck';
 import { SpreadLayout } from '../components/SpreadLayout';
 import { availableSpreads } from '../logic/spreads';
-import type { Spread } from '../logic/spreads';
-import { Sparkles, Layers, Grid, List } from 'lucide-react';
+import type { Spread, SpreadPosition } from '../logic/spreads';
+import { Sparkles, Layers, Grid, List, X } from 'lucide-react';
 
 export const Reading: React.FC = () => {
   const { activeSpread, setActiveSpread, dealSpread } = useDeck();
   const [selectedSpread, setSelectedSpread] = useState<Spread | null>(null);
   const [isDealing, setIsDealing] = useState(false);
+  const [summaryModalOpen, setSummaryModalOpen] = useState(false);
 
   const startReading = (spread: Spread) => {
     setSelectedSpread(spread);
@@ -33,6 +34,50 @@ export const Reading: React.FC = () => {
       );
     });
   };
+
+  const getCardSummary = (pos: SpreadPosition) => {
+    if (!pos.card) return null;
+    const name = pos.card.name;
+    // Extrahuj základní název pro český překlad
+    const baseName = name.replace(/^Eso /, '').replace(/^\d+ /, '').trim();
+    const czMap: Record<string, string> = {
+      'The Fool': 'Blázen', 'The Magus': 'Kejklíř', 'The Priestess': 'Velekněžka',
+      'The Empress': 'Císařovna', 'The Emperor': 'Císař', 'The Hierophant': 'Velekněz',
+      'The Lovers': 'Milenci', 'The Chariot': 'Vůz', 'Adjustment': 'Vyrovnání',
+      'The Hermit': 'Poustevník', 'Fortune': 'Kolo štěstí', 'Lust': 'Chtíč',
+      'The Hanged Man': 'Viselec', 'Death': 'Smrt', 'Art': 'Umění',
+      'The Devil': 'Ďábel', 'The Tower': 'Věž', 'The Star': 'Hvězda',
+      'The Moon': 'Měsíc', 'The Sun': 'Slunce', 'The Aeon': 'Aeon',
+      'The Universe': 'Vesmír'
+    };
+    const suitMap: Record<string, string> = {
+      'Wands': 'Holí', 'Cups': 'Pohárů', 'Swords': 'Mečů', 'Disks': 'Disku'
+    };
+    const courtMap: Record<string, string> = {
+      'Princess': 'Princezna', 'Prince': 'Princ', 'Queen': 'Královna', 'Knight': 'Rytíř'
+    };
+    let czName = name;
+    if (pos.card.type === 'Major') {
+      czName = czMap[baseName] || name;
+    } else if (pos.card.type === 'Minor') {
+      const num = name.match(/^\d+/)?.[0] || '';
+      const s = suitMap[baseName] || baseName;
+      czName = `${num} ${s}`;
+    } else if (pos.card.type === 'Court') {
+      const rank = courtMap[baseName] || baseName;
+      const s = suitMap[pos.card.suit] || pos.card.suit;
+      czName = `${rank} ${s}`;
+    }
+    const shortMeaning = pos.card.meaning.split('.')[0] || pos.card.meaning.slice(0, 100);
+    return { position: pos.label, czName, meaning: shortMeaning + (shortMeaning.length < pos.card.meaning.length ? '...' : '') };
+  };
+
+  const getVisibleCards = () => {
+    if (!activeSpread) return [];
+    return activeSpread.filter(p => p.card && !p.isHidden);
+  };
+
+  const visibleCards = getVisibleCards();
 
   const getIconForSpread = (id: string) => {
     switch (id) {
@@ -102,11 +147,59 @@ export const Reading: React.FC = () => {
           </button>
         </div>
       ) : (
-        <SpreadLayout
-          positions={activeSpread}
-          onCardClick={handleCardClick}
-          layoutType={selectedSpread.id.startsWith('ootk') ? 'flex' : 'grid'}
-        />
+        <>
+          <SpreadLayout
+            positions={activeSpread}
+            onCardClick={handleCardClick}
+            layoutType={selectedSpread.id.startsWith('ootk') ? 'flex' : 'grid'}
+          />
+          <div className="flex justify-center mt-6 px-4">
+            <button
+              onClick={() => setSummaryModalOpen(true)}
+              disabled={visibleCards.length === 0}
+              className="px-6 py-3 bg-gold-600 hover:bg-gold-500 text-mystic-950 font-bold rounded-xl font-serif text-lg shadow-lg shadow-gold-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              Zobrazit celkový souhrn ({visibleCards.length})
+            </button>
+          </div>
+        </>
+      )}
+
+      {/* Summary Modal */}
+      {summaryModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-mystic-900/90 backdrop-blur-sm" onClick={() => setSummaryModalOpen(false)}>
+          <div className="bg-mystic-800 border border-gold-500/30 rounded-2xl p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto shadow-[0_0_30px_rgba(0,0,0,0.5)]" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-serif text-gold-400">Celkový souhrn výkladu</h2>
+              <button onClick={() => setSummaryModalOpen(false)} className="text-gray-400 hover:text-gold-400 transition-colors">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            {visibleCards.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-gray-400">Zatím nebyly vyloženy žádné karty.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {visibleCards.map((pos) => {
+                  const summary = getCardSummary(pos);
+                  if (!summary) return null;
+                  return (
+                    <div key={pos.id} className="flex flex-col p-4 bg-mystic-700/50 rounded-xl border border-mystic-700">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="text-gold-400/70 text-sm font-semibold">{summary.position}</span>
+                      </div>
+                      <div className="flex justify-between items-start gap-4">
+                        <span className="text-gold-300 font-serif text-lg">{summary.czName}</span>
+                      </div>
+                      <p className="text-gray-400 text-sm mt-2 leading-relaxed">{summary.meaning}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
