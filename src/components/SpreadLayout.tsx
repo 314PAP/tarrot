@@ -16,25 +16,21 @@ export const SpreadLayout: React.FC<SpreadLayoutProps> = ({
       {positions.map((pos) => (
         <div
           key={pos.id}
-          className="flex flex-col items-center cursor-pointer"
-          onClick={() => onCardClick(pos.id)}
+          className="flex flex-col items-center gap-2"
         >
           <div className="text-sm text-gold-400 font-serif text-center mb-2">
             {pos.label}
           </div>
-          <div className="w-[45%] sm:w-32 aspect-[2/3]">
-            {pos.card ? (
-              <Card
-                card={pos.card}
-                isFlipped={!pos.isHidden}
-                onClick={() => onCardClick(pos.id)}
-              />
-            ) : (
-              <div className="w-full h-full rounded-lg border border-mystic-700 bg-mystic-900/50 flex items-center justify-center">
-                <span className="text-mystic-600 font-serif text-xs">Prázdné</span>
-              </div>
-            )}
-          </div>
+          <Card
+            card={pos.card}
+            isFlipped={!pos.isHidden}
+            onClick={() => onCardClick(pos.id)}
+          />
+          {pos.description ? (
+            <p className="max-w-40 text-center text-xs text-gray-400">
+              {pos.description}
+            </p>
+          ) : null}
         </div>
       ))}
     </div>

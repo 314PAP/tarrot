@@ -1,3 +1,5 @@
+import rawMajorCards from './cards.json';
+
 export type Suit = 'Major Arcana' | 'Wands' | 'Cups' | 'Swords' | 'Disks';
 export type CardType = 'Major' | 'Minor' | 'Court';
 
@@ -9,8 +11,21 @@ export interface TarotCard {
   type: CardType;
   keywords: string[];
   meaning: string;
+  description?: string;
+  position_meaning?: string;
   image: string;
 }
+
+interface RawMajorCard {
+  number: number;
+  name: string;
+  description?: string;
+}
+
+const rawMajors = rawMajorCards as RawMajorCard[];
+const majorDescriptionByNumber = new Map(
+  rawMajors.map((card) => [card.number, card.description ?? ''])
+);
 
 const majorCzechNames: Record<string, string> = {
   'The Fool': 'Blázen',
@@ -34,21 +49,21 @@ const majorCzechNames: Record<string, string> = {
   'The Moon': 'Měsíc',
   'The Sun': 'Slunce',
   'The Aeon': 'Aeon',
-  'The Universe': 'Vesmír'
+  'The Universe': 'Vesmír',
 };
 
 const suitCzech: Record<string, string> = {
-  'Wands': 'Holí',
-  'Cups': 'Pohárů',
-  'Swords': 'Mečů',
-  'Disks': 'Disku'
+  Wands: 'Holí',
+  Cups: 'Pohárů',
+  Swords: 'Mečů',
+  Disks: 'Disku',
 };
 
 const courtCzech: Record<string, string> = {
-  'Princess': 'Princezna',
-  'Prince': 'Princ',
-  'Queen': 'Královna',
-  'Knight': 'Rytíř'
+  Princess: 'Princezna',
+  Prince: 'Princ',
+  Queen: 'Královna',
+  Knight: 'Rytíř',
 };
 
 const majorsData = [
@@ -73,7 +88,7 @@ const majorsData = [
   { name: 'The Moon', number: 18, keywords: ['Iluze', 'Podvědomí', 'Ryby'], meaning: 'Měsíc (The Moon) (Ryby) je kartou temné noci duše, oblasti iluzí, strachu z neznáma, halucinací a hlubokého podvědomí plného stínů. Brána je hlídána dvěma bohy (Anubis), mezi kterými vede úzká, snová stezka skrze vody s posvátným skarabem nesoucím nové slunce. Výklad varuje před klamem, sebeklamem, iracionálními obavami a skrytými nepřáteli. Je nutné zachovat odvahu, čelit našim nejhlubším fobiím a probojovat se skrze temnotu, iluze a noční můry až ke skutečnému světlu poznání.' },
   { name: 'The Sun', number: 19, keywords: ['Znovuzrození', 'Slunce', 'Osvícení'], meaning: 'Slunce (The Sun) je samotným zdrojem života, extatickým a čistým světlem, vědomím bez hranic. Karta zobrazuje dvě tančící děti nového Eonu před Sluncem a horou, obklopené znameními zvěrokruhu. Znamená jas, pravdu, vitalitu, absolutní radost, optimismus, slávu a tvořivé uvolnění ze všech omezení. V jakémkoli výkladu je to obrovské „ANO“; přináší osvícení, vyjasnění situace, životní sílu, zdraví a dosažení plného rozkvětu, dětinskou radost a nevinnou svobodu.' },
   { name: 'The Aeon', number: 20, keywords: ['Nový věk', 'Rozhodnutí', 'Oheň'], meaning: 'Aeon (The Aeon), Crowleyho verze Soudu zosobňující element Ohně a Ducha. Zobrazuje vznik nového Věku Hora, božského dítěte. Bůh Hadit a bohyně Nuit vytvářejí prostor pro nové lidstvo; staré zaniklo a nastupuje absolutně nová perspektiva. Ve výkladu se jedná o zúčtování, konečné rozhodnutí s dalekosáhlými následky, přelomovou životní změnu nebo objevení vlastního Pravého Já (Pravé Vůle). Staré způsoby už neplatí a vy jste voláni k novému poslání.' },
-  { name: 'The Universe', number: 21, keywords: ['Dokončení', 'Celistvost', 'Saturn'], meaning: 'Vesmír (The Universe), klasický Svět, pod vládou Saturnu a elementu Země. Představuje dokonalé dokončení Velkého Díla, manifestaci, celistvost a absolutní harmonii hmotného a duchovního bytí. Panna tančí se souhvězdím, hlídána čtyřemi bytostmi elementů v rozích kosmu. Ve výkladu znamená dovršení dlouhé cesty, dosažení ultimátního cíle, odměnu za vytrvalost a spojení s veškerenstvem. Označuje plnou seberealizaci a zemi jako stabilní základnu, ze které můžeme opět vykročit k Bláznovi.' }
+  { name: 'The Universe', number: 21, keywords: ['Dokončení', 'Celistvost', 'Saturn'], meaning: 'Vesmír (The Universe), klasický Svět, pod vládou Saturnu a elementu Země. Představuje dokonalé dokončení Velkého Díla, manifestaci, celistvost a absolutní harmonii hmotného a duchovního bytí. Panna tančí se souhvězdím, hlídána čtyřmi bytostmi elementů v rozích kosmu. Ve výkladu znamená dovršení dlouhé cesty, dosažení ultimátního cíle, odměnu za vytrvalost a spojení s veškerenstvem. Označuje plnou seberealizaci a zemi jako stabilní základnu, ze které můžeme opět vykročit k Bláznovi.' },
 ];
 
 const suits: Suit[] = ['Wands', 'Cups', 'Swords', 'Disks'];
@@ -87,27 +102,95 @@ const minorNumbers = [
   { num: 7, names: ['Odvaha', 'Nezřízenost', 'Marnost', 'Selhání'] },
   { num: 8, names: ['Rychlost', 'Lenost', 'Zásah', 'Rozvážnost'] },
   { num: 9, names: ['Síla', 'Štěstí', 'Krutost', 'Zisk'] },
-  { num: 10, names: ['Útlak', 'Přesycení', 'Zkáza', 'Bohatství'] }
+  { num: 10, names: ['Útlak', 'Přesycení', 'Zkáza', 'Bohatství'] },
 ];
 
-const elementMap: Record<string, {name: string, desc: string}> = {
-  'Wands': { name: 'Oheň', desc: 'zastupující energii, vůli, vášeň, dynamiku a tvořivý impuls.' },
-  'Cups': { name: 'Voda', desc: 'představující emoce, vztahy, intuici, podvědomí a lásku.' },
-  'Swords': { name: 'Vzduch', desc: 'symbolizující mysl, intelekt, logiku, komunikaci a konflikty myšlenek.' },
-  'Disks': { name: 'Země', desc: 'související s hmotou, financemi, zdravím, praktičností a realizací v reálném světě.' }
+const elementMap: Record<string, { name: string; desc: string }> = {
+  Wands: { name: 'Oheň', desc: 'zastupující energii, vůli, vášeň, dynamiku a tvořivý impuls.' },
+  Cups: { name: 'Voda', desc: 'představující emoce, vztahy, intuici, podvědomí a lásku.' },
+  Swords: { name: 'Vzduch', desc: 'symbolizující mysl, intelekt, logiku, komunikaci a konflikty myšlenek.' },
+  Disks: { name: 'Země', desc: 'související s hmotou, financemi, zdravím, praktičností a realizací v reálném světě.' },
 };
 
 const courtDescriptions: Record<string, string> = {
-  'Knight': 'Rytíř (Knight) ztělesňuje rychlou a silnou ohnivou část svého elementu. Je to dynamická energie, která žene události kupředu s vášní a někdy až nevyzpytatelně.',
-  'Queen': 'Královna (Queen) představuje receptivní vodní část elementu. Proměňuje a udržuje jeho energii uvnitř sebe s hlubokým pochopením, trpělivostí a péčí.',
-  'Prince': 'Princ (Prince) je vzdušným aspektem. Využívá intelekt k řízení a usměrňování sil svého elementu, spojuje plány s akcí skrze logiku a komunikaci.',
-  'Princess': 'Princezna (Princess) je zemitou částí. Ukotvuje energii elementu do hmatatelné reality a dává vzniknout praktickým a dlouhodobým výsledkům.'
+  Knight: 'Rytíř (Knight) ztělesňuje rychlou a silnou ohnivou část svého elementu. Je to dynamická energie, která žene události kupředu s vášní a někdy až nevyzpytatelně.',
+  Queen: 'Královna (Queen) představuje receptivní vodní část elementu. Proměňuje a udržuje jeho energii uvnitř sebe s hlubokým pochopením, trpělivostí a péčí.',
+  Prince: 'Princ (Prince) je vzdušným aspektem. Využívá intelekt k řízení a usměrňování sil svého elementu, spojuje plány s akcí skrze logiku a komunikaci.',
+  Princess: 'Princezna (Princess) je zemitou částí. Ukotvuje energii elementu do hmatatelné reality a dává vzniknout praktickým a dlouhodobým výsledkům.',
+};
+
+const sephirothMap: Record<number, { name: string; theme: string }> = {
+  1: { name: 'Kether', theme: 'čistý záblesk možnosti a prapůvodní emanaci elementu' },
+  2: { name: 'Chokmah', theme: 'prvotní expanzi, výboj a nezkrocenou sílu počátku' },
+  3: { name: 'Binah', theme: 'formování, porozumění a strukturu, která dává síle tvar' },
+  4: { name: 'Chesed', theme: 'ustálení, milost a pevný řád, v němž energie nalézá oporu' },
+  5: { name: 'Geburah', theme: 'zkoušku, napětí, krizi a očistnou sílu střetu' },
+  6: { name: 'Tiphereth', theme: 'vyvážený střed, vědomou harmonii a jasné jádro významu' },
+  7: { name: 'Netzach', theme: 'instinkt, touhu, emoci a sílu, která chce jednat bez zábran' },
+  8: { name: 'Hod', theme: 'rozumovou organizaci, analýzu a způsob, jak sílu usměrnit' },
+  9: { name: 'Yesod', theme: 'vnitřní obraz, podvědomé proudy a energetickou kondenzaci' },
+  10: { name: 'Malkuth', theme: 'zhmotnění, výsledek a poslední podobu energie v realitě' },
+};
+
+const createCardImage = (title: string, subtitle: string) => {
+  const escapedTitle = title
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  const escapedSubtitle = subtitle
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#0f172a" />
+          <stop offset="100%" stop-color="#1e293b" />
+        </linearGradient>
+        <radialGradient id="glow" cx="50%" cy="42%" r="40%">
+          <stop offset="0%" stop-color="#eab308" stop-opacity="0.35" />
+          <stop offset="100%" stop-color="#eab308" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+      <rect width="400" height="600" rx="28" fill="url(#bg)" />
+      <rect x="16" y="16" width="368" height="568" rx="22" fill="none" stroke="#eab308" stroke-width="4" />
+      <rect x="32" y="32" width="336" height="536" rx="16" fill="none" stroke="#facc15" stroke-opacity="0.45" />
+      <circle cx="200" cy="240" r="110" fill="url(#glow)" />
+      <text x="200" y="92" text-anchor="middle" fill="#facc15" font-size="28" font-family="Georgia, serif">${escapedTitle}</text>
+      <text x="200" y="270" text-anchor="middle" fill="#fde68a" font-size="82" font-family="Georgia, serif">✡</text>
+      <text x="200" y="520" text-anchor="middle" fill="#cbd5e1" font-size="22" font-family="Georgia, serif">${escapedSubtitle}</text>
+    </svg>
+  `;
+
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+};
+
+const getMinorDescription = (num: number, suit: Suit, suitCz: string, cardName: string) => {
+  const element = elementMap[suit];
+  const sephira = sephirothMap[num];
+
+  return `${num} ${suitCz} se v systému Thoth čte skrze spojení živlu ${element.name} a sefiry ${sephira.name}, která do karty vnáší téma ${sephira.theme}. Název ${cardName.toLowerCase()} proto neoznačuje jen náladu nebo situaci, ale konkrétní fázi vývoje této energie na Stromu života. V praktickém výkladu karta ukazuje, jak se ${element.name.toLowerCase()} proměňuje od čistého impulsu k projevenému výsledku a jaké kvality je třeba vědomě rozvíjet, vyvažovat nebo korigovat, aby se síla barvy ${suitCz} mohla projevit zrale a tvořivě.`;
+};
+
+const getAceDescription = (suit: Suit, suitCz: string) => {
+  const element = elementMap[suit];
+  const sephira = sephirothMap[1];
+
+  return `Eso ${suitCz} odpovídá sefiře ${sephira.name} a představuje ${sephira.theme}. V Crowleyho systému jde o nejjemnější a nejkoncentrovanější podobu živlu ${element.name}, která ještě není omezena konkrétní formou. Taková karta ukazuje okamžik, kdy se teprve rodí možnost, inspirace nebo vnitřní impuls. Její hlubší význam spočívá v tom, že nás zve k vědomé spolupráci s pramenem této síly, nikoli jen s jejím pozdějším, viditelným projevem.`;
+};
+
+const getCourtDescription = (rank: string, suit: Suit, suitCz: string) => {
+  const element = elementMap[suit];
+  const rankCz = courtCzech[rank];
+
+  return `${rankCz} ${suitCz} je osobnostní a iniciační archetyp, v němž se živel ${element.name} projevuje skrze charakter, postoj a způsob jednání. V Crowleyho tarotu dvorní karty neukazují jen „nějakou osobu“, ale i konkrétní dynamiku vědomí, která se může ozývat ve vás samotných, ve vztahu nebo v celé situaci. Když se tato karta objeví ve výkladu, je užitečné sledovat, jak se ${element.desc} promítá do temperamentu, rozhodování, emocí nebo stylu vedení života.`;
 };
 
 const generateDeck = (): TarotCard[] => {
   const deck: TarotCard[] = [];
 
-  // Major Arcana
   majorsData.forEach((card) => {
     const czechName = majorCzechNames[card.name] || card.name;
     deck.push({
@@ -118,53 +201,53 @@ const generateDeck = (): TarotCard[] => {
       type: 'Major',
       keywords: card.keywords,
       meaning: card.meaning,
-      image: `https://placehold.co/400x600/1a0b2e/d4af37?text=${czechName.replace(' ', '+')}`
+      description: majorDescriptionByNumber.get(card.number) || '',
+      image: createCardImage(czechName, 'Velká arkána'),
     });
   });
 
-  // Minor Arcana (Aces to 10s & Courts)
   suits.forEach((suit, suitIndex) => {
-    const el = elementMap[suit];
+    const element = elementMap[suit];
     const suitCz = suitCzech[suit];
 
-    // Ace
     deck.push({
       id: `minor-${suit}-1`,
       name: `Eso ${suitCz}`,
       number: 1,
-      suit: suit,
+      suit,
       type: 'Minor',
-      keywords: ['Esence', 'Zárodek', el.name],
-      meaning: `Eso ${suitCz} reprezentuje nejčistší a naprosto primární sílu elementu (${el.name}). Je to semínko nebo kořen, ze kterého vyvěrá veškerá energie projevující se jako ${el.desc} Karta symbolizuje ohromný nevyužitý potenciál, nový start v této oblasti života a neomezovanou tvořivou esenci dané barvy, která čeká na svou realizaci.`,
-      image: `https://placehold.co/400x600/1a0b2e/e6c253?text=Eso+${suitCz}`
+      keywords: ['Esence', 'Zárodek', element.name],
+      meaning: `Eso ${suitCz} reprezentuje nejčistší a naprosto primární sílu elementu (${element.name}). Je to semínko nebo kořen, ze kterého vyvěrá veškerá energie projevující se jako ${element.desc} Karta symbolizuje ohromný nevyužitý potenciál, nový start v této oblasti života a neomezovanou tvořivou esenci dané barvy, která čeká na svou realizaci.`,
+      description: getAceDescription(suit, suitCz),
+      image: createCardImage(`Eso ${suitCz}`, element.name),
     });
 
-    // 2-10
-    minorNumbers.forEach(item => {
+    minorNumbers.forEach((item) => {
       const czechName = item.names[suitIndex];
       deck.push({
         id: `minor-${suit}-${item.num}`,
         name: `${item.num} ${suitCz}`,
         number: item.num,
-        suit: suit,
+        suit,
         type: 'Minor',
-        keywords: [czechName, el.name],
-        meaning: `Karta ${item.num} ${suitCz} (${czechName}) nese specifické poselství v rámci živlu ${el.name}. Spojuje číslovku sefiry na Stromu života (která dává energii její numerickou vlastnost) se silou elementu, ${el.desc} Tento aspekt se projevuje dynamicky jako ${czechName.toLowerCase()}, což značí vývojovou fázi v dané problematice. Karta radí věnovat pozornost právě těmto aspektům a pracovat s nimi pro nalezení harmonie.`,
-        image: `https://placehold.co/400x600/1a0b2e/e6c253?text=${item.num}+${suitCz}`
+        keywords: [czechName, element.name],
+        meaning: `Karta ${item.num} ${suitCz} (${czechName}) nese specifické poselství v rámci živlu ${element.name}. Spojuje číslovku sefiry na Stromu života (která dává energii její numerickou vlastnost) se silou elementu, ${element.desc} Tento aspekt se projevuje dynamicky jako ${czechName.toLowerCase()}, což značí vývojovou fázi v dané problematice. Karta radí věnovat pozornost právě těmto aspektům a pracovat s nimi pro nalezení harmonie.`,
+        description: getMinorDescription(item.num, suit, suitCz, czechName),
+        image: createCardImage(`${item.num} ${suitCz}`, czechName),
       });
     });
 
-    // Courts
-    courtRanks.forEach(rank => {
+    courtRanks.forEach((rank) => {
       const rankCz = courtCzech[rank];
       deck.push({
         id: `court-${suit}-${rank}`,
         name: `${rankCz} ${suitCz}`,
-        suit: suit,
+        suit,
         type: 'Court',
-        keywords: [rankCz, el.name, 'Osobnost'],
-        meaning: `${courtDescriptions[rank]} Ve spojení s elementem (${el.name}), který vládne barvě ${suit}, tato karta ukazuje konkrétní archetyp osobnosti, způsob prožívání nebo konkrétní osobu ve vašem okolí, jež tuto vlastnost manifestuje do reality. Její energie je vázána na to, jakým způsobem se ${el.desc}`,
-        image: `https://placehold.co/400x600/1a0b2e/e6c253?text=${rankCz}+${suitCz}`
+        keywords: [rankCz, element.name, 'Osobnost'],
+        meaning: `${courtDescriptions[rank]} Ve spojení s elementem (${element.name}), který vládne barvě ${suit}, tato karta ukazuje konkrétní archetyp osobnosti, způsob prožívání nebo konkrétní osobu ve vašem okolí, jež tuto vlastnost manifestuje do reality. Její energie je vázána na to, jakým způsobem se ${element.desc}`,
+        description: getCourtDescription(rank, suit, suitCz),
+        image: createCardImage(`${rankCz} ${suitCz}`, element.name),
       });
     });
   });

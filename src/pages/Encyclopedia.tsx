@@ -57,20 +57,15 @@ export const Encyclopedia: React.FC = () => {
       <div className="flex-grow">
         {filteredCards.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {filteredCards.map((card) => (
-              <div
+            {filteredCards.map((card: TarotCard) => (
+              <button
                 key={card.id}
-                className="flex flex-col items-center group cursor-pointer"
+                type="button"
+                className="flex justify-center"
                 onClick={() => setSelectedCard(card)}
               >
-                <div className="relative w-full aspect-[2/3] rounded-xl overflow-hidden border-2 border-transparent group-hover:border-gold-500/50 transition-all shadow-lg group-hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
-                  <img src={card.image} alt={card.name} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-mystic-900 via-transparent to-transparent opacity-90 group-hover:opacity-70 transition-opacity"></div>
-                  <div className="absolute bottom-0 w-full p-2 text-center transform translate-y-2 group-hover:translate-y-0 transition-transform">
-                    <span className="text-xs sm:text-sm font-serif text-gold-400 font-bold block truncate px-1">{card.name}</span>
-                  </div>
-                </div>
-              </div>
+                <Card card={card} isFlipped={true} />
+              </button>
             ))}
           </div>
         ) : (
@@ -112,12 +107,21 @@ export const Encyclopedia: React.FC = () => {
 
               <div>
                 <h3 className="text-lg text-gray-300 mb-2 font-serif border-b border-mystic-700 pb-1">Význam</h3>
-                <p className="text-gray-400 leading-relaxed">
+                <p className="text-gray-300 leading-relaxed whitespace-pre-line">
                   {selectedCard.meaning}
                 </p>
-                <p className="text-gray-500 text-sm mt-4 italic">
-                  Poznámka: Thoth tarot je hluboce symbolický. Doporučujeme meditovat nad zobrazenými symboly pro hlubší osobní vhled.
-                </p>
+                {selectedCard.description ? (
+                  <>
+                    <h3 className="text-lg text-gray-300 mt-6 mb-2 font-serif border-b border-mystic-700 pb-1">Popis</h3>
+                    <p className="text-gray-400 leading-relaxed whitespace-pre-line">
+                      {selectedCard.description}
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-gray-500 text-sm mt-4 italic">
+                    Poznámka: Thoth tarot je hluboce symbolický. Doporučujeme meditovat nad zobrazenými symboly pro hlubší osobní vhled.
+                  </p>
+                )}
               </div>
 
               <button

@@ -6,9 +6,20 @@ export const useSearch = () => {
   const [suitFilter, setSuitFilter] = useState<string>('All');
 
   const filteredCards = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+
     return thothTarotDeck.filter((card: TarotCard) => {
-      const matchesQuery = card.name.toLowerCase().includes(query.toLowerCase()) || 
-                           card.keywords.some(kw => kw.toLowerCase().includes(query.toLowerCase()));
+      const searchableText = [
+        card.name,
+        card.meaning,
+        card.description ?? '',
+        ...card.keywords,
+      ]
+        .join(' ')
+        .toLowerCase();
+
+      const matchesQuery =
+        normalizedQuery.length === 0 || searchableText.includes(normalizedQuery);
       const matchesSuit = suitFilter === 'All' || card.suit === suitFilter || card.type === suitFilter;
       
       return matchesQuery && matchesSuit;

@@ -37,37 +37,13 @@ export const Reading: React.FC = () => {
 
   const getCardSummary = (pos: SpreadPosition) => {
     if (!pos.card) return null;
-    const name = pos.card.name;
-    const baseName = name.replace(/^Eso /, '').replace(/\d+ /, '').trim();
-    const czMap: Record<string, string> = {
-      'The Fool': 'Blázen', 'The Magus': 'Kejklíř', 'The Priestess': 'Velekněžka',
-      'The Empress': 'Císařovna', 'The Emperor': 'Císař', 'The Hierophant': 'Velekněz',
-      'The Lovers': 'Milenci', 'The Chariot': 'Vůz', 'Adjustment': 'Vyrovnání',
-      'The Hermit': 'Poustevník', 'Fortune': 'Kolo štěstí', 'Lust': 'Chtíč',
-      'The Hanged Man': 'Viselec', 'Death': 'Smrt', 'Art': 'Umění',
-      'The Devil': 'Ďábel', 'The Tower': 'Věž', 'The Star': 'Hvězda',
-      'The Moon': 'Měsíc', 'The Sun': 'Slunce', 'The Aeon': 'Aeon',
-      'The Universe': 'Vesmír'
+    return {
+      position: pos.label,
+      positionDescription: pos.description,
+      cardName: pos.card.name,
+      meaning: pos.card.meaning,
+      description: pos.card.description,
     };
-    const suitMap: Record<string, string> = {
-      'Wands': 'Holí', 'Cups': 'Pohárů', 'Swords': 'Mečů', 'Disks': 'Disku'
-    };
-    const courtMap: Record<string, string> = {
-      'Princess': 'Princezna', 'Prince': 'Princ', 'Queen': 'Královna', 'Knight': 'Rytíř'
-    };
-    let czName = name;
-    if (pos.card.type === 'Major') {
-      czName = czMap[baseName] || name;
-    } else if (pos.card.type === 'Minor') {
-      const num = name.match(/^\d+/)?.[0] || '';
-      const s = suitMap[baseName] || baseName;
-      czName = `${num} ${s}`;
-    } else if (pos.card.type === 'Court') {
-      const rank = courtMap[baseName] || baseName;
-      const s = suitMap[pos.card.suit] || pos.card.suit;
-      czName = `${rank} ${s}`;
-    }
-    return { position: pos.label, czName, meaning: pos.card.meaning };
   };
 
   const getVisibleCards = () => {
@@ -76,6 +52,26 @@ export const Reading: React.FC = () => {
   };
 
   const visibleCards = getVisibleCards();
+
+  const buildReadingStory = () => {
+    if (!selectedSpread || visibleCards.length === 0) return '';
+
+    return visibleCards
+      .map((pos) => {
+        const cardData = getCardSummary(pos);
+        if (!cardData) return '';
+
+        const parts = [
+          `Na pozici ${cardData.position.toLowerCase()} se objevuje karta ${cardData.cardName}.`,
+          cardData.positionDescription ? `Tato pozice se vztahuje k tématu: ${cardData.positionDescription}.` : '',
+          cardData.meaning,
+          cardData.description ?? '',
+        ].filter(Boolean);
+
+        return parts.join(' ');
+      })
+      .join('\n\n');
+  };
 
   const getIconForSpread = (id: string) => {
     switch (id) {
@@ -139,7 +135,7 @@ export const Reading: React.FC = () => {
           <button
             onClick={handleDeal}
             disabled={isDealing}
-            className="px-8 py-4 bg-gold-600 hover:bg-gold-500 text-mystic-950 font-bold rounded-xl font-serif text-lg shadow-lg shadow-gold-500/20 disabled:opacity-50 transition-all"
+            className="px-8 py-4 bg-gold-500 hover:bg-gold-400 text-mystic-950 font-bold rounded-xl font-serif text-lg shadow-lg shadow-gold-500/20 disabled:opacity-50 transition-all"
           >
             {isDealing ? 'Míchám...' : 'Vyložit karty'}
           </button>
@@ -154,7 +150,7 @@ export const Reading: React.FC = () => {
             <button
               onClick={() => setSummaryModalOpen(true)}
               disabled={visibleCards.length === 0}
-              className="px-6 py-3 bg-gold-600 hover:bg-gold-500 text-mystic-950 font-bold rounded-xl font-serif text-lg shadow-lg shadow-gold-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="px-6 py-3 bg-gold-500 hover:bg-gold-400 text-mystic-950 font-bold rounded-xl font-serif text-lg shadow-lg shadow-gold-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               Zobrazit celkový souhrn ({visibleCards.length})
             </button>
@@ -178,13 +174,16 @@ export const Reading: React.FC = () => {
               </div>
             ) : (
               <div className="space-y-6">
-                <div className="prose prose-invert max-w-none">
-                  <p className="text-lg text-gray-300 leading-relaxed mb-6">
-                    Tato výkladová cesta odhaluje příběh vaší situace skrze jazyk karet. 
-                    Každá karta nese v sobě moudrost, a jejich spojení tvoří 
-                    ucelený portrét vašeho aktuálního životního okamžiku.
+                <div className="rounded-2xl border border-gold-500/20 bg-mystic-900/40 p-5">
+                  <h3 className="mb-3 font-serif text-xl text-gold-300">Příběh výkladu</h3>
+                  <p className="text-gray-300 leading-relaxed whitespace-pre-line">
+                    {selectedSpread
+                      ? `${selectedSpread.description} Každá odkrytá karta přidává další vrstvu do společného obrazu vaší situace. Níže najdete jak jednotlivé významy, tak souvislé vyprávění, které z nich vzniká.`
+                      : 'Každá odkrytá karta přidává další vrstvu do společného obrazu vaší situace.'}
                   </p>
-                  
+                </div>
+
+                <div className="max-w-none space-y-5">
                   {visibleCards.map((pos, index) => {
                     const cardData = getCardSummary(pos);
                     if (!cardData) return null;
@@ -199,23 +198,32 @@ export const Reading: React.FC = () => {
                             {cardData.position}
                           </span>
                         </div>
+                        {cardData.positionDescription ? (
+                          <p className="mb-3 text-sm text-gray-400">
+                            {cardData.positionDescription}
+                          </p>
+                        ) : null}
                         <h3 className="text-xl font-serif text-gold-300 mb-3">
-                          {cardData.czName}
+                          {cardData.cardName}
                         </h3>
-                        <p className="text-gray-300 leading-relaxed">
+                        <p className="text-gray-200 leading-relaxed whitespace-pre-line">
                           {cardData.meaning}
                         </p>
+                        {cardData.description ? (
+                          <p className="mt-4 text-gray-400 leading-relaxed whitespace-pre-line">
+                            {cardData.description}
+                          </p>
+                        ) : null}
                       </div>
                     );
                   })}
+                </div>
 
-                  <div className="mt-8 pt-6 border-t border-gold-500/30">
-                    <p className="text-base text-gray-400 italic">
-                      Tento příběh karet odráží vaši současnou cestu. Přečtěte si významy 
-                      opakovaně a dovolte, aby se vám jejich hluboká moudrost 
-                      vnitřně projevila.
-                    </p>
-                  </div>
+                <div className="rounded-2xl border border-gold-500/20 bg-mystic-900/40 p-5">
+                  <h3 className="mb-3 font-serif text-xl text-gold-300">Souvislý narativ</h3>
+                  <p className="text-gray-300 leading-relaxed whitespace-pre-line">
+                    {buildReadingStory()}
+                  </p>
                 </div>
               </div>
             )}
