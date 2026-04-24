@@ -33,7 +33,8 @@ export const Home: React.FC = () => {
 
           <p className="text-base text-gray-400">
             Každá karta nese v sobě vibrations elementů Ohně, Vody, Vzduchu a Země, 
-            archetypy Major Arcany a671
+            archetypy Major Arcany a hlubokou esoterickou symboliku, jež provází
+            cestu iniciace od prázdna k plnosti bytí.
           </p>
         </div>
 

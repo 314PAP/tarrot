@@ -146,11 +146,10 @@ export const Reading: React.FC = () => {
         </div>
       ) : (
         <>
-          <SpreadLayout
-            positions={activeSpread}
-            onCardClick={handleCardClick}
-            layoutType={selectedSpread.id.startsWith('ootk') ? 'flex' : 'grid'}
-          />
+           <SpreadLayout
+             positions={activeSpread}
+             onCardClick={handleCardClick}
+           />
           <div className="flex justify-center mt-6 px-4">
             <button
               onClick={() => setSummaryModalOpen(true)}
