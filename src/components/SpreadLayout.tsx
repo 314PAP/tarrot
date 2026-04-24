@@ -8,50 +8,37 @@ interface SpreadLayoutProps {
   layoutType?: 'grid' | 'flex';
 }
 
-export const SpreadLayout: React.FC<SpreadLayoutProps> = ({ 
-  positions, 
+export const SpreadLayout: React.FC<SpreadLayoutProps> = ({
+  positions,
   onCardClick,
   layoutType = 'grid'
 }) => {
-  if (layoutType === 'grid') {
+  // For complex spreads (Celtic Cross, 15-card), use flex-wrap with smaller cards
+  const isComplexSpread = positions.length >= 10;
+
+  if (isComplexSpread || layoutType === 'flex') {
     return (
-      <div className="w-full max-w-4xl mx-auto p-4 overflow-x-auto">
-        <div 
-          className="min-w-[600px] grid gap-4 p-4"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(5, 1fr)',
-            gridTemplateRows: 'repeat(5, auto)',
-            gridTemplateAreas: `
-              ". top-left-1 . top-right-1 ."
-              ". top-left-2 . top-right-2 ."
-              "center-1 top-left-3 center-2 top-right-3 center-3"
-              ". bottom-left-1 . bottom-right-1 ."
-              ". bottom-left-2 . bottom-right-2 ."
-              ". bottom-left-3 . bottom-right-3 ."
-            `
-          }}
-        >
+      <div className="w-full max-w-6xl mx-auto p-4">
+        <div className="flex flex-wrap gap-4 justify-center items-start">
           {positions.map((pos) => (
-            <div 
-              key={pos.id} 
-              className="flex flex-col items-center justify-center relative cursor-pointer"
-              style={{ gridArea: pos.gridArea }}
+            <div
+              key={pos.id}
+              className="flex flex-col items-center cursor-pointer w-20 sm:w-24"
               onClick={() => onCardClick(pos.id)}
             >
-              <div className="text-xs text-stone-400 font-serif text-center mb-1 max-w-[100px] truncate">
+              <div className="text-xs text-gold-400 font-serif text-center mb-2 h-8 flex items-center justify-center">
                 {pos.label}
               </div>
-              <div className="w-24 h-40">
+              <div className="w-full aspect-[2/3]">
                 {pos.card ? (
-                  <Card 
-                    card={pos.card} 
-                    isFlipped={!pos.isHidden} 
+                  <Card
+                    card={pos.card}
+                    isFlipped={!pos.isHidden}
                     onClick={() => onCardClick(pos.id)}
                   />
                 ) : (
-                  <div className="w-full h-full rounded-xl border border-stone-700 bg-stone-900/50 flex items-center justify-center">
-                    <span className="text-stone-600 font-serif text-sm">Prázdné</span>
+                  <div className="w-full h-full rounded-lg border border-mystic-700 bg-mystic-900/50 flex items-center justify-center">
+                    <span className="text-mystic-600 font-serif text-xs">Prázdné</span>
                   </div>
                 )}
               </div>
@@ -62,31 +49,35 @@ export const SpreadLayout: React.FC<SpreadLayoutProps> = ({
     );
   }
 
-  // Fallback pro OOTK nebo jednoduché lineární výklady
+  // For simpler spreads (1-3 cards), use grid layout with larger cards
   return (
-    <div className="flex flex-wrap gap-4 justify-center items-center w-full max-w-4xl mx-auto p-4">
-      {positions.map((pos) => (
-        <div 
-          key={pos.id} 
-          className="flex flex-col items-center cursor-pointer"
-          onClick={() => onCardClick(pos.id)}
-        >
-          <div className="text-sm text-stone-400 font-serif mb-2 text-center">
-            {pos.label}
+    <div className="w-full max-w-4xl mx-auto p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 justify-items-center">
+        {positions.map((pos) => (
+          <div
+            key={pos.id}
+            className="flex flex-col items-center cursor-pointer"
+            onClick={() => onCardClick(pos.id)}
+          >
+            <div className="text-sm text-gold-400 font-serif text-center mb-3">
+              {pos.label}
+            </div>
+            <div className="w-32 h-52 sm:w-40 sm:h-64">
+              {pos.card ? (
+                <Card
+                  card={pos.card}
+                  isFlipped={!pos.isHidden}
+                  onClick={() => onCardClick(pos.id)}
+                />
+              ) : (
+                <div className="w-full h-full rounded-xl border border-mystic-700 bg-mystic-900/50 flex items-center justify-center">
+                  <span className="text-mystic-600 font-serif text-sm">Prázdné</span>
+                </div>
+              )}
+            </div>
           </div>
-          <div className="w-24 h-40">
-            {pos.card ? (
-              <Card 
-                card={pos.card} 
-                isFlipped={!pos.isHidden} 
-                onClick={() => onCardClick(pos.id)}
-              />
-            ) : (
-              <div className="w-full h-full rounded-xl border border-stone-700 bg-stone-900/50" />
-            )}
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };

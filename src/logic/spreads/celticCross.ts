@@ -12,7 +12,7 @@ export const celticCrossSpread: Spread = {
     { id: '4', label: 'Minulost', description: 'Nedávná minulost ovlivňující současnost' },
     { id: '5', label: 'Cíl', description: 'Kam tazatel směřuje, čeho chce dosáhnout' },
     { id: '6', label: 'Budoucnost', description: 'Co se stane v blízké budoucnosti' },
-    { id: '7', label: 'Postoj tazatele', description: 'Jak tazatel vnímá situaci' },
+    { id: '7', label: 'Postoj', description: 'Jak tazatel vnímá situaci' },
     { id: '8', label: 'Vnější vlivy', description: 'Vlivy okolí nebo jiných lidí' },
     { id: '9', label: 'Naděje a obavy', description: 'Tazatelovy vnitřní pocity' },
     { id: '10', label: 'Výsledek', description: 'Konečný výsledek situace' }
@@ -29,7 +29,7 @@ export const celticCrossSpread: Spread = {
       { id: '4', label: 'Minulost', card: deck[3], isHidden: true },
       { id: '5', label: 'Cíl', card: deck[4], isHidden: true },
       { id: '6', label: 'Budoucnost', card: deck[5], isHidden: true },
-      { id: '7', label: 'Postoj tazatele', card: deck[6], isHidden: true },
+      { id: '7', label: 'Postoj', card: deck[6], isHidden: true },
       { id: '8', label: 'Vnější vlivy', card: deck[7], isHidden: true },
       { id: '9', label: 'Naděje a obavy', card: deck[8], isHidden: true },
       { id: '10', label: 'Výsledek', card: deck[9], isHidden: true }
