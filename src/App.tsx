@@ -66,7 +66,7 @@ function App() {
             <h1 className="mt-3 font-serif text-3xl text-gold-400 sm:text-4xl">
               Zadejte zaklínadlo
             </h1>
-            <p className="mt-4 text-lg text-gray-300">
+            <p className="spell-hint mt-4 text-lg font-serif">
               "stvořím, jak mluvím"
             </p>
             <p className="mt-3 text-sm leading-relaxed text-gray-400">
@@ -88,7 +88,6 @@ function App() {
                 inputMode="text"
                 maxLength={SPELL.length}
                 onChange={(event) => handleSpellChange(event.target.value)}
-                placeholder="ABRAKADABRA"
                 spellCheck={false}
                 type="text"
                 value={spell}
@@ -99,11 +98,7 @@ function App() {
               <p className="text-center text-sm text-amber-300">
                 {error}
               </p>
-            ) : (
-              <p className="text-center text-xs uppercase tracking-[0.22em] text-gold-400/55">
-                Zadávání je omezeno na velká písmena
-              </p>
-            )}
+            ) : null}
 
             <button
               className="w-full rounded-xl bg-gold-500 px-6 py-4 font-bold tracking-[0.22em] text-mystic-900 transition-colors hover:bg-gold-400"
