@@ -79,13 +79,13 @@ export const Home: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-[80vh] w-full max-w-md mx-auto pt-4 pb-24 px-4 overflow-x-hidden">
+     <div className="min-h-screen flex flex-col items-center p-4 w-full">
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-6"
+        className="text-center mb-6 w-full max-w-md mx-auto"
       >
-        <h1 className="text-3xl md:text-4xl font-serif text-gold-500 mb-2 drop-shadow-[0_0_10px_rgba(212,175,55,0.3)]">
+        <h1 className="text-2xl mt-8 font-serif text-gold-500 mb-2 drop-shadow-[0_0_10px_rgba(212,175,55,0.3)]">
           Thoth Tarot
         </h1>
         <p className="text-sm text-gray-400 font-serif">

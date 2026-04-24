@@ -29,7 +29,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-8">
+            <nav className="hidden md:flex flex-row items-center justify-center space-x-4">
               {navLinks.map((link) => {
                 const isActive = location.pathname === link.path;
                 const Icon = link.icon;
@@ -41,7 +41,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                       isActive ? 'text-gold-400' : 'text-gray-300 hover:text-gold-500'
                     }`}
                   >
-                    <Icon className="w-4 h-4" />
+                    <Icon className="w-3.5 h-3.5" />
                     <span className="font-serif tracking-wide">{link.label}</span>
                   </Link>
                 );

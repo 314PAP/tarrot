@@ -66,7 +66,7 @@ export const Card: React.FC<CardProps> = ({ card, isFlipped = false, onClick, cl
 
   return (
     <div 
-      className={cn("relative w-48 h-72 sm:w-64 sm:h-96 cursor-pointer", className)} 
+      className={cn("relative mx-auto max-w-[300px] rounded-xl border border-yellow-600/30 w-48 h-72 sm:w-64 sm:h-96 cursor-pointer", className)} 
       onClick={handleClick}
     >
       <CardAnimation 
