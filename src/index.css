@@ -1,9 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-mystic-700: #1e293b;
+  --color-mystic-800: #1a2332;
+  --color-mystic-900: #0f172a;
+  --color-gold-400: #facc15;
+  --color-gold-500: #eab308;
+}
 
 body {
-  background-color: #0f172a;
-  color: #facc15;
+  background-color: var(--color-mystic-900);
+  color: var(--color-gold-400);
   font-family: sans-serif;
 }
