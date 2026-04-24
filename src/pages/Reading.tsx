@@ -35,10 +35,9 @@ export const Reading: React.FC = () => {
     });
   };
 
-  const getCardSummary = (pos: SpreadPosition) => {
+  const getCardNarrative = (pos: SpreadPosition) => {
     if (!pos.card) return null;
     const name = pos.card.name;
-    // Extrahuj základní název pro český překlad
     const baseName = name.replace(/^Eso /, '').replace(/^\d+ /, '').trim();
     const czMap: Record<string, string> = {
       'The Fool': 'Blázen', 'The Magus': 'Kejklíř', 'The Priestess': 'Velekněžka',
@@ -68,8 +67,7 @@ export const Reading: React.FC = () => {
       const s = suitMap[pos.card.suit] || pos.card.suit;
       czName = `${rank} ${s}`;
     }
-    const shortMeaning = pos.card.meaning.split('.')[0] || pos.card.meaning.slice(0, 100);
-    return { position: pos.label, czName, meaning: shortMeaning + (shortMeaning.length < pos.card.meaning.length ? '...' : '') };
+    return { position: pos.label, czName, meaning: pos.card.meaning };
   };
 
   const getVisibleCards = () => {
@@ -180,22 +178,46 @@ export const Reading: React.FC = () => {
                 <p className="text-gray-400">Zatím nebyly vyloženy žádné karty.</p>
               </div>
             ) : (
-              <div className="space-y-4">
-                {visibleCards.map((pos) => {
-                  const summary = getCardSummary(pos);
-                  if (!summary) return null;
-                  return (
-                    <div key={pos.id} className="flex flex-col p-4 bg-mystic-700/50 rounded-xl border border-mystic-700">
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="text-gold-400/70 text-sm font-semibold">{summary.position}</span>
+              <div className="space-y-6">
+                <div className="prose prose-invert max-w-none">
+                  <p className="text-lg text-gray-300 leading-relaxed mb-6">
+                    Tato výkladová cesta odhaluje příběh vaší situace skrze jazyk karet. 
+                    Každá karta nese within moudrost, a jejich spojení tvoří 
+                    ucelený portrét vašeho aktuálního životního okamžiku.
+                  </p>
+                  
+                  {visibleCards.map((pos, index) => {
+                    const cardData = getCardNarrative(pos);
+                    if (!cardData) return null;
+                    
+                    return (
+                      <div key={pos.id} className="relative pl-6 border-l-2 border-gold-500/50">
+                        <div className="absolute -left-3 top-0 w-5 h-5 rounded-full bg-gold-500 flex items-center justify-center">
+                          <span className="text-mystic-950 text-xs font-bold">{index + 1}</span>
+                        </div>
+                        <div className="mb-2">
+                          <span className="text-gold-400/70 text-sm font-semibold uppercase tracking-wider">
+                            {cardData.position}
+                          </span>
+                        </div>
+                        <h3 className="text-2xl font-serif text-gold-300 mb-3">
+                          {cardData.czName}
+                        </h3>
+                        <p className="text-gray-300 leading-relaxed">
+                          {cardData.meaning}
+                        </p>
                       </div>
-                      <div className="flex justify-between items-start gap-4">
-                        <span className="text-gold-300 font-serif text-lg">{summary.czName}</span>
-                      </div>
-                      <p className="text-gray-400 text-sm mt-2 leading-relaxed">{summary.meaning}</p>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+
+                  <div className="mt-8 pt-6 border-t border-gold-500/30">
+                    <p className="text-base text-gray-400 italic">
+                      Tento příběh karet odráží vaši současnou cestu. Přečtěte si významy 
+                      opakovaně a dovolte, aby se vám jejich hluboká moudrost 
+                      vnitřně projevila.
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
           </div>
