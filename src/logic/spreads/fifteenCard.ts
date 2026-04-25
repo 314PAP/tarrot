@@ -39,7 +39,7 @@ export const fifteenCardSpread: Spread = {
       id: `${index + 1}`,
       label,
       card: deck[index],
-      isHidden: true
+      isHidden: false
     }));
   }
 };

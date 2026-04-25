@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDeck } from '../hooks/useDeck';
 import { SpreadLayout } from '../components/SpreadLayout';
 import { availableSpreads } from '../logic/spreads';
@@ -6,10 +6,14 @@ import type { Spread, SpreadPosition } from '../logic/spreads';
 import { Sparkles, Layers, Grid, List, X } from 'lucide-react';
 
 export const Reading: React.FC = () => {
-  const { activeSpread, setActiveSpread, dealSpread } = useDeck();
-  const [selectedSpread, setSelectedSpread] = useState<Spread | null>(null);
-  const [isDealing, setIsDealing] = useState(false);
-  const [summaryModalOpen, setSummaryModalOpen] = useState(false);
+  try {
+    const { activeSpread, setActiveSpread, dealSpread } = useDeck();
+    const [selectedSpread, setSelectedSpread] = useState<Spread | null>(null);
+    const [isDealing, setIsDealing] = useState(false);
+    const [summaryModalOpen, setSummaryModalOpen] = useState(false);
+
+    console.log('[READING DEBUG] selectedSpread:', selectedSpread?.name, 'activeSpread:', activeSpread?.length);
+    console.log('[READING DEBUG] availableSpreads:', availableSpreads?.length);
 
   const startReading = (spread: Spread) => {
     setSelectedSpread(spread);
@@ -19,10 +23,15 @@ export const Reading: React.FC = () => {
   const handleDeal = () => {
     if (!selectedSpread) return;
     setIsDealing(true);
-    setTimeout(() => {
-      dealSpread(selectedSpread);
+    try {
+      const positions = dealSpread(selectedSpread);
+      console.log('[DEBUG] dealSpread returned:', positions);
+      setActiveSpread(positions);
+    } catch (error) {
+      console.error('[ERROR] dealSpread failed:', error);
+    } finally {
       setIsDealing(false);
-    }, 600);
+    }
   };
 
   const handleCardClick = (positionId: string) => {
@@ -46,32 +55,234 @@ export const Reading: React.FC = () => {
     };
   };
 
-  const getVisibleCards = () => {
-    if (!activeSpread) return [];
-    return activeSpread.filter(p => p.card && !p.isHidden);
-  };
+   const getVisibleCards = () => {
+     if (!activeSpread) return [];
+     return activeSpread.filter(p => p.card && !p.isHidden);
+   };
 
-  const visibleCards = getVisibleCards();
+   const visibleCards = getVisibleCards();
 
-  const buildReadingStory = () => {
-    if (!selectedSpread || visibleCards.length === 0) return '';
+   // 1. Stručný význam karty (1-2 věty)
+   const getShortCardMeaning = (card: any): string => {
+     if (!card) return '';
 
-    return visibleCards
-      .map((pos) => {
-        const cardData = getCardSummary(pos);
-        if (!cardData) return '';
+     const suitCz = card.suit === 'Wands' ? 'Holí' :
+                    card.suit === 'Cups' ? 'Pohárů' :
+                    card.suit === 'Swords' ? 'Mečů' :
+                    card.suit === 'Disks' ? 'Disku' : card.suit;
 
-        const parts = [
-          `Na pozici ${cardData.position.toLowerCase()} se objevuje karta ${cardData.cardName}.`,
-          cardData.positionDescription ? `Tato pozice se vztahuje k tématu: ${cardData.positionDescription}.` : '',
-          cardData.meaning,
-          cardData.description ?? '',
-        ].filter(Boolean);
+     // Major Arcana: klíčová slova + první věta z meaning
+     if (card.type === 'Major') {
+       const keywordsPart = card.keywords && card.keywords.length >= 2
+         ? `${card.keywords[0]}, ${card.keywords[1]}`
+         : (card.keywords?.[0] || '');
+       const shortDesc = (card.meaning?.split('.')[0] || '') + '.';
+       return keywordsPart ? `${keywordsPart}. ${shortDesc}` : shortDesc;
+     }
 
-        return parts.join(' ');
-      })
-      .join('\n\n');
-  };
+     // Court cards: typ (Princezna/Princ/Královna/Rytíř) a suit
+     if (card.type === 'Court') {
+       const rankMap: Record<string, string> = {
+         'Princess': 'Princezna',
+         'Prince': 'Princ',
+         'Queen': 'Královna',
+         'Knight': 'Rytíř'
+       };
+       const rankKey = ['Princess', 'Prince', 'Queen', 'Knight'].find(k => card.name.includes(k));
+       const rankName = rankKey ? rankMap[rankKey] : card.name.split(' ')[0];
+       return `${rankName} ${suitCz}`;
+     }
+
+     // Minor Arcana: číslo + suit + klíčové slovo
+     if (card.type === 'Minor' && card.number !== undefined) {
+       const keyword = card.keywords?.[0] || '';
+       return `${card.number} ${suitCz}${keyword ? ' – ' + keyword : ''}`;
+     }
+
+     // Fallback: první věta z meaning
+     return (card.meaning?.split('.')[0] || '') + '.';
+   };
+
+   // 2. Skupina pozice pro Keltský kříž
+   const getPositionGroup = (positionId: string, positionLabel: string): string => {
+     const label = positionLabel.toLowerCase();
+     if (label === 'základ') return 'základ_situace';
+     if (label === 'minulost') return 'minulý_kontext';
+     if (['tazatel', 'postoj', 'naděje a obavy'].includes(label)) return 'vnitřní_rozměr';
+     if (['překážka', 'vnější vlivy'].includes(label)) return 'konfrontace_a_vlivy';
+     if (label === 'cíl') return 'směr_a_cíl';
+     if (label === 'budoucnost') return 'budoucí_vývoj';
+     if (label === 'výsledek') return 'konečný_výsledek';
+     return 'single';
+   };
+
+   // 3. Název skupiny
+   const getGroupLabel = (group: string): string => {
+     const labels: Record<string, string> = {
+       'základ_situace': 'Základ situace',
+       'minulý_kontext': 'Minulý kontext',
+       'vnitřní_rozměr': 'Vnitřní rozměr',
+       'konfrontace_a_vlivy': 'Konfrontace a vlivy',
+       'směr_a_cíl': 'Směr a cíl',
+       'budoucí_vývoj': 'Budoucí vývoj',
+       'konečný_výsledek': 'Konečný výsledek'
+     };
+     return labels[group] || '';
+   };
+
+   // 4. Dynamické přechodové věty mezi skupinami
+   const getTransitionSentence = (prevGroup: string, nextGroup: string, prevCardName: string, nextCardName: string): string => {
+     const transitions: Record<string, Record<string, string>> = {
+       'základ_situace': {
+         'konfrontace_a_vlivy': `Tento základ je konfrontován s ${nextCardName}.`,
+         'minulý_kontext': `Základní situace je formována minulostí, která se projevuje skrze ${nextCardName}.`,
+         'vnitřní_rozměr': `Základní energie se proměňuje ve vnitřní rozměr, kde vystupuje ${nextCardName}.`
+       },
+       'minulý_kontext': {
+         'vnitřní_rozměr': `Minulost přináší důsledky, které se nyní projevují v ${nextCardName}.`,
+         'konfrontace_a_vlivy': `Z minula vyrostlé okolnosti se konfrontují s ${nextCardName}.`,
+         'budoucí_vývoj': `V širším kontextu se ukazuje, že ${nextCardName} bude hrát klíčovou roli.`
+       },
+       'vnitřní_rozměr': {
+         'konfrontace_a_vlivy': `Vnitřní stav tazatele se setkává s překážkou ${nextCardName}.`,
+         'směr_a_cíl': `Z tohoto vnitřního povědomí vychází cíl ztělesněný ${nextCardName}.`,
+         'budoucí_vývoj': `Aktuální postoj a naděje ukazují, že ${nextCardName} bude významný.`
+       },
+       'konfrontace_a_vlivy': {
+         'směr_a_cíl': `Překážky a vlivy směřují k cíli ztělesněnému ${nextCardName}.`,
+         'budoucí_vývoj': `Konfrontace s vnějším světem otevřela cestu k ${nextCardName}.`,
+         'vnitřní_rozměr': `Vnější tlaky také ovlivňují vnitřní pocity zobrazené ${nextCardName}.`
+       },
+       'směr_a_cíl': {
+         'budoucí_vývoj': `Cíl, ke kterému směřujete, povede k ${nextCardName}.`,
+         'vnitřní_rozměr': `Směr, který zvolujete, reflektuje vaše vnitřní pocity zobrazené ${nextCardName}.`,
+         'konečný_výsledek': `Vaše aspirace vedly konečně k ${nextCardName}.`
+       },
+       'budoucí_vývoj': {
+         'konečný_výsledek': `Budoucí vývoj přinese konečný výsledek ztělesněný ${nextCardName}.`,
+         'vnitřní_rozměr': `Budoucí události budou ovlivněny vnitřními pocity zobrazenými ${nextCardName}.`
+       }
+     };
+
+     const possibleTransitions = transitions[prevGroup];
+     if (possibleTransitions) {
+       const direct = possibleTransitions[nextGroup];
+       if (direct) return direct;
+       // Fallback na první dostupnou přechodovou větu
+       const firstKey = Object.keys(possibleTransitions)[0];
+       if (firstKey) return possibleTransitions[firstKey];
+     }
+
+     // Výchozí přechodová věta
+     const groupNames: Record<string, string> = {
+       'základ_situace': 'základní situace',
+       'minulý_kontext': 'minulost',
+       'vnitřní_rozměr': 'vnitřní rozměr',
+       'konfrontace_a_vlivy': 'konfrontaci a vlivy',
+       'směr_a_cíl': 'cíl',
+       'budoucí_vývoj': 'budoucí vývoj',
+       'konečný_výsledek': 'konečný výsledek'
+     };
+     const prevName = groupNames[prevGroup] || prevGroup.replace('_', ' ');
+     const nextName = groupNames[nextGroup] || nextGroup.replace('_', ' ');
+     return `Tato karta vede k ${nextName}, kde vystupuje ${nextCardName}.`;
+    };
+
+    // 5. Syntéza výkladu
+   const buildSynthesis = (groupedCards: Record<string, any[]>): string => {
+     const importantCards = [
+       groupedCards['základ_situace']?.[0],
+       groupedCards['konečný_výsledek']?.[0],
+       groupedCards['vnitřní_rozměr']?.[0]
+     ].filter(Boolean);
+
+     const keywords = importantCards.flatMap((item: any) => {
+       const card = item.card;
+       return card?.keywords?.slice(0, 2) || [];
+     });
+
+     if (keywords.length === 0) {
+       return '**Syntéza výkladu:** Hlavní téma vaší situace se promenuje skrze zobrazené karty. Celkově výklad ukazuje důležitost pochopení současného okamžiku a přijetí příštích změn.';
+     }
+
+     const uniqueKeywords = [...new Set(keywords)];
+     const synthesisText = `Hlavním tématem je ${uniqueKeywords.slice(0, 3).join(', ')}. Klíčové je zaměřit se na ${uniqueKeywords[1] || 'vnitřní poznání'}. Celkově výklad ukazuje, že aktuální zkušenost je nezbytná pro váš růst.`;
+
+     return `**Syntéza výkladu:** ${synthesisText}`;
+   };
+
+   // === NOVÁ IMPLEMENTACE buildReadingStory() ===
+   const buildReadingStory = () => {
+     if (!selectedSpread || visibleCards.length === 0) return '';
+
+     // Pro non-Celtic Cross: jednoduchý výpis všech karet bez seskupování
+     if (selectedSpread.id !== 'celtic-cross') {
+       return visibleCards
+         .map((pos) => {
+           const cardData = getCardSummary(pos);
+           if (!cardData) return '';
+           const shortMeaning = getShortCardMeaning(pos.card);
+           return `${pos.label}: ${cardData.cardName} – ${shortMeaning}.`;
+         })
+         .join('\n');
+     }
+
+     // Pro Keltský kříž: seskupení do logických celků
+     const groups: Record<string, any[]> = {};
+     visibleCards.forEach((pos) => {
+       const group = getPositionGroup(pos.id, pos.label);
+       if (!groups[group]) groups[group] = [];
+       groups[group].push(pos);
+     });
+
+     const groupOrder = [
+       'základ_situace',
+       'minulý_kontext',
+       'vnitřní_rozměr',
+       'konfrontace_a_vlivy',
+       'směr_a_cíl',
+       'budoucí_vývoj',
+       'konečný_výsledek'
+     ];
+
+     const storyParts: string[] = [];
+
+     groupOrder.forEach((groupKey, groupIndex) => {
+       const cardsInGroup = groups[groupKey];
+       if (!cardsInGroup || cardsInGroup.length === 0) return;
+
+       const groupLabel = getGroupLabel(groupKey);
+       storyParts.push(`${groupLabel}:`);
+
+       cardsInGroup.forEach((pos, cardIndex) => {
+         const cardData = getCardSummary(pos);
+         if (!cardData) return;
+         const shortMeaning = getShortCardMeaning(pos.card);
+         storyParts.push(`${pos.label}: ${cardData.cardName} – ${shortMeaning}.`);
+       });
+
+       // Přidat přechodovou větu mezi skupinami (kromě poslední skupiny)
+       const nextGroupKey = groupOrder[groupIndex + 1];
+       if (nextGroupKey && groups[nextGroupKey] && groups[nextGroupKey].length > 0) {
+         const currentLastCard = cardsInGroup[cardsInGroup.length - 1];
+         const nextFirstCard = groups[nextGroupKey][0];
+         const transition = getTransitionSentence(
+           groupKey,
+           nextGroupKey,
+           currentLastCard.card?.name || '',
+           nextFirstCard.card?.name || ''
+         );
+         storyParts.push(transition);
+       }
+
+       storyParts.push(''); // prázdný řádek mezi skupinami
+     });
+
+     // Přidat syntézu
+     storyParts.push(buildSynthesis(groups));
+
+     return storyParts.filter(Boolean).join('\n');
+   };
 
   const getIconForSpread = (id: string) => {
     switch (id) {
@@ -232,4 +443,13 @@ export const Reading: React.FC = () => {
       )}
     </div>
   );
+  } catch (error) {
+    console.error('[ERROR] Reading component failed:', error);
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[70vh] py-8">
+        <h1 className="text-2xl font-serif text-red-500 mb-4">Chyba v komponentě</h1>
+        <p className="text-gray-400">{String(error)}</p>
+      </div>
+    );
+  }
 };

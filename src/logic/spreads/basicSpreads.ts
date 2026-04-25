@@ -10,7 +10,7 @@ export const singleCardSpread: Spread = {
   ],
   deal: (deck: TarotCard[]) => {
     return [
-      { id: '1', label: 'Karta dne', card: deck[0], isHidden: true }
+      { id: '1', label: 'Karta dne', card: deck[0], isHidden: false }
     ];
   }
 };
@@ -26,9 +26,9 @@ export const threeCardSpread: Spread = {
   ],
   deal: (deck: TarotCard[]) => {
     return [
-      { id: '1', label: 'Minulost', card: deck[0], isHidden: true },
-      { id: '2', label: 'Přítomnost', card: deck[1], isHidden: true },
-      { id: '3', label: 'Budoucnost', card: deck[2], isHidden: true },
+      { id: '1', label: 'Minulost', card: deck[0], isHidden: false },
+      { id: '2', label: 'Přítomnost', card: deck[1], isHidden: false },
+      { id: '3', label: 'Budoucnost', card: deck[2], isHidden: false },
     ];
   }
 };

@@ -23,16 +23,16 @@ export const celticCrossSpread: Spread = {
     }
 
     return [
-      { id: '1', label: 'Tazatel', card: deck[0], isHidden: true },
-      { id: '2', label: 'Překážka', card: deck[1], isHidden: true },
-      { id: '3', label: 'Základ', card: deck[2], isHidden: true },
-      { id: '4', label: 'Minulost', card: deck[3], isHidden: true },
-      { id: '5', label: 'Cíl', card: deck[4], isHidden: true },
-      { id: '6', label: 'Budoucnost', card: deck[5], isHidden: true },
-      { id: '7', label: 'Postoj', card: deck[6], isHidden: true },
-      { id: '8', label: 'Vnější vlivy', card: deck[7], isHidden: true },
-      { id: '9', label: 'Naděje a obavy', card: deck[8], isHidden: true },
-      { id: '10', label: 'Výsledek', card: deck[9], isHidden: true }
+      { id: '1', label: 'Tazatel', card: deck[0], isHidden: false },
+      { id: '2', label: 'Překážka', card: deck[1], isHidden: false },
+      { id: '3', label: 'Základ', card: deck[2], isHidden: false },
+      { id: '4', label: 'Minulost', card: deck[3], isHidden: false },
+      { id: '5', label: 'Cíl', card: deck[4], isHidden: false },
+      { id: '6', label: 'Budoucnost', card: deck[5], isHidden: false },
+      { id: '7', label: 'Postoj', card: deck[6], isHidden: false },
+      { id: '8', label: 'Vnější vlivy', card: deck[7], isHidden: false },
+      { id: '9', label: 'Naděje a obavy', card: deck[8], isHidden: false },
+      { id: '10', label: 'Výsledek', card: deck[9], isHidden: false }
     ];
   }
 };

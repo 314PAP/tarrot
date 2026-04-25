@@ -29,7 +29,7 @@ export const useDeck = () => {
   const dealSpread = useCallback((spread: Spread) => {
     const freshDeck = shuffleDeck([...thothTarotDeck]);
     const dealtPositions = spread.deal(freshDeck);
-    setActiveSpread(dealtPositions);
+
     // Všechny použité karty nastavíme jako tažené a vyjmeme z balíčku
     const drawn = dealtPositions.map(p => p.card).filter(Boolean) as TarotCard[];
     setDrawnCards(drawn);
