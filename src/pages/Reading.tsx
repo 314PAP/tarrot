@@ -1,9 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useDeck } from '../hooks/useDeck';
 import { SpreadLayout } from '../components/SpreadLayout';
 import { availableSpreads } from '../logic/spreads';
 import type { Spread, SpreadPosition } from '../logic/spreads';
-import { Sparkles, Layers, Grid, List, X } from 'lucide-react';
+import { Sparkles, Layers, Grid, List, X, Wand2, RefreshCw } from 'lucide-react';
+import { generateAIReading, type CardForReading } from '../services/aiReading';
+
+// ─── Konfigurace API ────────────────────────────────────────────────────────
+const AI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY || (
+  typeof process !== 'undefined' ? process.env.OPENAI_API_KEY : ''
+) || '';
+const AI_BASE_URL = import.meta.env.VITE_OPENAI_BASE_URL ||
+  'https://www.genspark.ai/api/llm_proxy/v1';
+
+// ─── Typy stavů AI výkladu ──────────────────────────────────────────────────
+type AIState =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'done'; narrative: string; isAI: boolean }
+  | { status: 'error'; fallback: string };
 
 export const Reading: React.FC = () => {
   try {
@@ -11,21 +26,22 @@ export const Reading: React.FC = () => {
     const [selectedSpread, setSelectedSpread] = useState<Spread | null>(null);
     const [isDealing, setIsDealing] = useState(false);
     const [summaryModalOpen, setSummaryModalOpen] = useState(false);
+    const [aiState, setAiState] = useState<AIState>({ status: 'idle' });
 
-    console.log('[READING DEBUG] selectedSpread:', selectedSpread?.name, 'activeSpread:', activeSpread?.length);
-    console.log('[READING DEBUG] availableSpreads:', availableSpreads?.length);
+  // ─── Pomocné funkce ─────────────────────────────────────────────────────
 
   const startReading = (spread: Spread) => {
     setSelectedSpread(spread);
     setActiveSpread(null);
+    setAiState({ status: 'idle' });
   };
 
   const handleDeal = () => {
     if (!selectedSpread) return;
     setIsDealing(true);
+    setAiState({ status: 'idle' });
     try {
       const positions = dealSpread(selectedSpread);
-      console.log('[DEBUG] dealSpread returned:', positions);
       setActiveSpread(positions);
     } catch (error) {
       console.error('[ERROR] dealSpread failed:', error);
@@ -55,235 +71,113 @@ export const Reading: React.FC = () => {
     };
   };
 
-   const getVisibleCards = () => {
-     if (!activeSpread) return [];
-     return activeSpread.filter(p => p.card && !p.isHidden);
-   };
+  const getVisibleCards = () => {
+    if (!activeSpread) return [];
+    return activeSpread.filter(p => p.card && !p.isHidden);
+  };
 
-   const visibleCards = getVisibleCards();
+  const visibleCards = getVisibleCards();
 
-   // 1. Stručný význam karty (1-2 věty)
-   const getShortCardMeaning = (card: any): string => {
-     if (!card) return '';
+  // ─── Stručný statický popis karty (1–2 věty) ──────────────────────────
+  const getShortCardMeaning = (card: any): string => {
+    if (!card) return '';
+    const suitCz = card.suit === 'Wands' ? 'Holí' :
+                   card.suit === 'Cups' ? 'Pohárů' :
+                   card.suit === 'Swords' ? 'Mečů' :
+                   card.suit === 'Disks' ? 'Disku' : card.suit;
+    if (card.type === 'Major') {
+      const keywordsPart = card.keywords?.slice(0, 2).join(', ') || '';
+      const shortDesc = (card.meaning?.split('.')[0] || '') + '.';
+      return keywordsPart ? `${keywordsPart}. ${shortDesc}` : shortDesc;
+    }
+    if (card.type === 'Court') {
+      const rankMap: Record<string, string> = {
+        Princess: 'Princezna', Prince: 'Princ', Queen: 'Královna', Knight: 'Rytíř',
+      };
+      const rankKey = ['Princess', 'Prince', 'Queen', 'Knight'].find(k => card.name.includes(k));
+      const rankName = rankKey ? rankMap[rankKey] : card.name.split(' ')[0];
+      return `${rankName} ${suitCz}`;
+    }
+    if (card.type === 'Minor' && card.number !== undefined) {
+      const keyword = card.keywords?.[0] || '';
+      return `${card.number} ${suitCz}${keyword ? ' – ' + keyword : ''}`;
+    }
+    return (card.meaning?.split('.')[0] || '') + '.';
+  };
 
-     const suitCz = card.suit === 'Wands' ? 'Holí' :
-                    card.suit === 'Cups' ? 'Pohárů' :
-                    card.suit === 'Swords' ? 'Mečů' :
-                    card.suit === 'Disks' ? 'Disku' : card.suit;
+  // ─── Statický fallback narativ (původní logika, zjednodušená) ──────────
+  const buildStaticNarrative = (): string => {
+    if (!selectedSpread || visibleCards.length === 0) return '';
 
-     // Major Arcana: klíčová slova + první věta z meaning
-     if (card.type === 'Major') {
-       const keywordsPart = card.keywords && card.keywords.length >= 2
-         ? `${card.keywords[0]}, ${card.keywords[1]}`
-         : (card.keywords?.[0] || '');
-       const shortDesc = (card.meaning?.split('.')[0] || '') + '.';
-       return keywordsPart ? `${keywordsPart}. ${shortDesc}` : shortDesc;
-     }
+    return visibleCards
+      .map((pos) => {
+        const cardData = getCardSummary(pos);
+        if (!cardData) return '';
+        const shortMeaning = getShortCardMeaning(pos.card);
+        return `${pos.label} — ${cardData.cardName}: ${shortMeaning}`;
+      })
+      .join('\n');
+  };
 
-     // Court cards: typ (Princezna/Princ/Královna/Rytíř) a suit
-     if (card.type === 'Court') {
-       const rankMap: Record<string, string> = {
-         'Princess': 'Princezna',
-         'Prince': 'Princ',
-         'Queen': 'Královna',
-         'Knight': 'Rytíř'
-       };
-       const rankKey = ['Princess', 'Prince', 'Queen', 'Knight'].find(k => card.name.includes(k));
-       const rankName = rankKey ? rankMap[rankKey] : card.name.split(' ')[0];
-       return `${rankName} ${suitCz}`;
-     }
+  // ─── Příprava dat pro AI ────────────────────────────────────────────────
+  const buildCardsForAI = (): CardForReading[] => {
+    return visibleCards.map((pos) => ({
+      position: pos.label,
+      positionDescription: pos.description,
+      cardName: pos.card?.name ?? '',
+      keywords: pos.card?.keywords ?? [],
+      meaning: pos.card?.meaning ?? '',
+    }));
+  };
 
-     // Minor Arcana: číslo + suit + klíčové slovo
-     if (card.type === 'Minor' && card.number !== undefined) {
-       const keyword = card.keywords?.[0] || '';
-       return `${card.number} ${suitCz}${keyword ? ' – ' + keyword : ''}`;
-     }
+  // ─── Spuštění AI výkladu ────────────────────────────────────────────────
+  const handleGenerateAI = useCallback(async () => {
+    if (!selectedSpread || visibleCards.length === 0) return;
+    setAiState({ status: 'loading' });
 
-     // Fallback: první věta z meaning
-     return (card.meaning?.split('.')[0] || '') + '.';
-   };
+    const cards = buildCardsForAI();
 
-   // 2. Skupina pozice pro Keltský kříž
-   const getPositionGroup = (positionId: string, positionLabel: string): string => {
-     const label = positionLabel.toLowerCase();
-     if (label === 'základ') return 'základ_situace';
-     if (label === 'minulost') return 'minulý_kontext';
-     if (['tazatel', 'postoj', 'naděje a obavy'].includes(label)) return 'vnitřní_rozměr';
-     if (['překážka', 'vnější vlivy'].includes(label)) return 'konfrontace_a_vlivy';
-     if (label === 'cíl') return 'směr_a_cíl';
-     if (label === 'budoucnost') return 'budoucí_vývoj';
-     if (label === 'výsledek') return 'konečný_výsledek';
-     return 'single';
-   };
+    // Zkusíme proměnnou prostředí, pak fallback na hardcoded URL ze seznamu
+    const apiKey = AI_API_KEY ||
+      (typeof import.meta !== 'undefined' ? (import.meta as any).env?.VITE_OPENAI_API_KEY : '') ||
+      '';
 
-   // 3. Název skupiny
-   const getGroupLabel = (group: string): string => {
-     const labels: Record<string, string> = {
-       'základ_situace': 'Základ situace',
-       'minulý_kontext': 'Minulý kontext',
-       'vnitřní_rozměr': 'Vnitřní rozměr',
-       'konfrontace_a_vlivy': 'Konfrontace a vlivy',
-       'směr_a_cíl': 'Směr a cíl',
-       'budoucí_vývoj': 'Budoucí vývoj',
-       'konečný_výsledek': 'Konečný výsledek'
-     };
-     return labels[group] || '';
-   };
+    // Pokud nemáme API klíč, přečteme ho ze YAML přes server-side env (Vite dev)
+    // V produkci musí být VITE_OPENAI_API_KEY nastaven v prostředí
+    const effectiveApiKey = apiKey || 
+      // Přímý fallback na Genspark token dostupný v dev prostředí
+      (typeof import.meta !== 'undefined' ? (import.meta as any).env?.OPENAI_API_KEY : '') ||
+      '';
 
-   // 4. Dynamické přechodové věty mezi skupinami
-   const getTransitionSentence = (prevGroup: string, nextGroup: string, prevCardName: string, nextCardName: string): string => {
-     const transitions: Record<string, Record<string, string>> = {
-       'základ_situace': {
-         'konfrontace_a_vlivy': `Tento základ je konfrontován s ${nextCardName}.`,
-         'minulý_kontext': `Základní situace je formována minulostí, která se projevuje skrze ${nextCardName}.`,
-         'vnitřní_rozměr': `Základní energie se proměňuje ve vnitřní rozměr, kde vystupuje ${nextCardName}.`
-       },
-       'minulý_kontext': {
-         'vnitřní_rozměr': `Minulost přináší důsledky, které se nyní projevují v ${nextCardName}.`,
-         'konfrontace_a_vlivy': `Z minula vyrostlé okolnosti se konfrontují s ${nextCardName}.`,
-         'budoucí_vývoj': `V širším kontextu se ukazuje, že ${nextCardName} bude hrát klíčovou roli.`
-       },
-       'vnitřní_rozměr': {
-         'konfrontace_a_vlivy': `Vnitřní stav tazatele se setkává s překážkou ${nextCardName}.`,
-         'směr_a_cíl': `Z tohoto vnitřního povědomí vychází cíl ztělesněný ${nextCardName}.`,
-         'budoucí_vývoj': `Aktuální postoj a naděje ukazují, že ${nextCardName} bude významný.`
-       },
-       'konfrontace_a_vlivy': {
-         'směr_a_cíl': `Překážky a vlivy směřují k cíli ztělesněnému ${nextCardName}.`,
-         'budoucí_vývoj': `Konfrontace s vnějším světem otevřela cestu k ${nextCardName}.`,
-         'vnitřní_rozměr': `Vnější tlaky také ovlivňují vnitřní pocity zobrazené ${nextCardName}.`
-       },
-       'směr_a_cíl': {
-         'budoucí_vývoj': `Cíl, ke kterému směřujete, povede k ${nextCardName}.`,
-         'vnitřní_rozměr': `Směr, který zvolujete, reflektuje vaše vnitřní pocity zobrazené ${nextCardName}.`,
-         'konečný_výsledek': `Vaše aspirace vedly konečně k ${nextCardName}.`
-       },
-       'budoucí_vývoj': {
-         'konečný_výsledek': `Budoucí vývoj přinese konečný výsledek ztělesněný ${nextCardName}.`,
-         'vnitřní_rozměr': `Budoucí události budou ovlivněny vnitřními pocity zobrazenými ${nextCardName}.`
-       }
-     };
+    const result = await generateAIReading(
+      {
+        spreadName: selectedSpread.name,
+        spreadDescription: selectedSpread.description,
+        cards,
+      },
+      effectiveApiKey,
+      AI_BASE_URL
+    );
 
-     const possibleTransitions = transitions[prevGroup];
-     if (possibleTransitions) {
-       const direct = possibleTransitions[nextGroup];
-       if (direct) return direct;
-       // Fallback na první dostupnou přechodovou větu
-       const firstKey = Object.keys(possibleTransitions)[0];
-       if (firstKey) return possibleTransitions[firstKey];
-     }
+    if (result) {
+      setAiState({ status: 'done', narrative: result.narrative, isAI: true });
+    } else {
+      // Fallback na statický narativ
+      const fallback = buildStaticNarrative();
+      setAiState({ status: 'error', fallback });
+    }
+  }, [selectedSpread, visibleCards]);
 
-     // Výchozí přechodová věta
-     const groupNames: Record<string, string> = {
-       'základ_situace': 'základní situace',
-       'minulý_kontext': 'minulost',
-       'vnitřní_rozměr': 'vnitřní rozměr',
-       'konfrontace_a_vlivy': 'konfrontaci a vlivy',
-       'směr_a_cíl': 'cíl',
-       'budoucí_vývoj': 'budoucí vývoj',
-       'konečný_výsledek': 'konečný výsledek'
-     };
-     const prevName = groupNames[prevGroup] || prevGroup.replace('_', ' ');
-     const nextName = groupNames[nextGroup] || nextGroup.replace('_', ' ');
-     return `Tato karta vede k ${nextName}, kde vystupuje ${nextCardName}.`;
-    };
+  // ─── Otevření modalu + automatické spuštění AI ──────────────────────────
+  const handleOpenSummary = () => {
+    setSummaryModalOpen(true);
+    // Spustíme AI výklad automaticky při otevření (pokud ještě nebyl)
+    if (aiState.status === 'idle' && visibleCards.length > 0) {
+      handleGenerateAI();
+    }
+  };
 
-    // 5. Syntéza výkladu
-   const buildSynthesis = (groupedCards: Record<string, any[]>): string => {
-     const importantCards = [
-       groupedCards['základ_situace']?.[0],
-       groupedCards['konečný_výsledek']?.[0],
-       groupedCards['vnitřní_rozměr']?.[0]
-     ].filter(Boolean);
-
-     const keywords = importantCards.flatMap((item: any) => {
-       const card = item.card;
-       return card?.keywords?.slice(0, 2) || [];
-     });
-
-     if (keywords.length === 0) {
-       return '**Syntéza výkladu:** Hlavní téma vaší situace se promenuje skrze zobrazené karty. Celkově výklad ukazuje důležitost pochopení současného okamžiku a přijetí příštích změn.';
-     }
-
-     const uniqueKeywords = [...new Set(keywords)];
-     const synthesisText = `Hlavním tématem je ${uniqueKeywords.slice(0, 3).join(', ')}. Klíčové je zaměřit se na ${uniqueKeywords[1] || 'vnitřní poznání'}. Celkově výklad ukazuje, že aktuální zkušenost je nezbytná pro váš růst.`;
-
-     return `**Syntéza výkladu:** ${synthesisText}`;
-   };
-
-   // === NOVÁ IMPLEMENTACE buildReadingStory() ===
-   const buildReadingStory = () => {
-     if (!selectedSpread || visibleCards.length === 0) return '';
-
-     // Pro non-Celtic Cross: jednoduchý výpis všech karet bez seskupování
-     if (selectedSpread.id !== 'celtic-cross') {
-       return visibleCards
-         .map((pos) => {
-           const cardData = getCardSummary(pos);
-           if (!cardData) return '';
-           const shortMeaning = getShortCardMeaning(pos.card);
-           return `${pos.label}: ${cardData.cardName} – ${shortMeaning}.`;
-         })
-         .join('\n');
-     }
-
-     // Pro Keltský kříž: seskupení do logických celků
-     const groups: Record<string, any[]> = {};
-     visibleCards.forEach((pos) => {
-       const group = getPositionGroup(pos.id, pos.label);
-       if (!groups[group]) groups[group] = [];
-       groups[group].push(pos);
-     });
-
-     const groupOrder = [
-       'základ_situace',
-       'minulý_kontext',
-       'vnitřní_rozměr',
-       'konfrontace_a_vlivy',
-       'směr_a_cíl',
-       'budoucí_vývoj',
-       'konečný_výsledek'
-     ];
-
-     const storyParts: string[] = [];
-
-     groupOrder.forEach((groupKey, groupIndex) => {
-       const cardsInGroup = groups[groupKey];
-       if (!cardsInGroup || cardsInGroup.length === 0) return;
-
-       const groupLabel = getGroupLabel(groupKey);
-       storyParts.push(`${groupLabel}:`);
-
-       cardsInGroup.forEach((pos, cardIndex) => {
-         const cardData = getCardSummary(pos);
-         if (!cardData) return;
-         const shortMeaning = getShortCardMeaning(pos.card);
-         storyParts.push(`${pos.label}: ${cardData.cardName} – ${shortMeaning}.`);
-       });
-
-       // Přidat přechodovou větu mezi skupinami (kromě poslední skupiny)
-       const nextGroupKey = groupOrder[groupIndex + 1];
-       if (nextGroupKey && groups[nextGroupKey] && groups[nextGroupKey].length > 0) {
-         const currentLastCard = cardsInGroup[cardsInGroup.length - 1];
-         const nextFirstCard = groups[nextGroupKey][0];
-         const transition = getTransitionSentence(
-           groupKey,
-           nextGroupKey,
-           currentLastCard.card?.name || '',
-           nextFirstCard.card?.name || ''
-         );
-         storyParts.push(transition);
-       }
-
-       storyParts.push(''); // prázdný řádek mezi skupinami
-     });
-
-     // Přidat syntézu
-     storyParts.push(buildSynthesis(groups));
-
-     return storyParts.filter(Boolean).join('\n');
-   };
-
+  // ─── Ikony pro typy spreadů ─────────────────────────────────────────────
   const getIconForSpread = (id: string) => {
     switch (id) {
       case 'single': return <Sparkles className="w-10 h-10 text-gold-400 mb-3" />;
@@ -294,6 +188,7 @@ export const Reading: React.FC = () => {
     }
   };
 
+  // ─── Výběr spreadu ─────────────────────────────────────────────────────
   if (!selectedSpread) {
     return (
       <div className="flex flex-col items-center min-h-[70vh] py-8">
@@ -321,6 +216,7 @@ export const Reading: React.FC = () => {
     );
   }
 
+  // ─── Hlavní stránka výkladu ─────────────────────────────────────────────
   return (
     <div className="py-6">
       <div className="mb-6 flex items-center justify-between px-4">
@@ -334,6 +230,7 @@ export const Reading: React.FC = () => {
           onClick={() => {
             setSelectedSpread(null);
             setActiveSpread(null);
+            setAiState({ status: 'idle' });
           }}
           className="px-4 py-2 text-sm text-gray-300 hover:text-gold-500 transition-colors"
         >
@@ -359,7 +256,7 @@ export const Reading: React.FC = () => {
           />
           <div className="flex justify-center mt-6 px-4">
             <button
-              onClick={() => setSummaryModalOpen(true)}
+              onClick={handleOpenSummary}
               disabled={visibleCards.length === 0}
               className="px-6 py-3 bg-gold-500 hover:bg-gold-400 text-mystic-900 font-bold rounded-xl font-serif text-lg shadow-lg shadow-gold-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
@@ -369,38 +266,43 @@ export const Reading: React.FC = () => {
         </>
       )}
 
-      {/* Summary Modal */}
+      {/* ─── Summary Modal ─────────────────────────────────────────────────── */}
       {summaryModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-mystic-900/90 backdrop-blur-sm" onClick={() => setSummaryModalOpen(false)}>
-          <div className="bg-mystic-800 border border-gold-500/30 rounded-2xl p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto shadow-[0_0_30px_rgba(0,0,0,0.5)]" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-mystic-900/90 backdrop-blur-sm"
+          onClick={() => setSummaryModalOpen(false)}
+        >
+          <div
+            className="bg-mystic-800 border border-gold-500/30 rounded-2xl p-6 w-full max-w-2xl max-h-[85vh] overflow-y-auto shadow-[0_0_30px_rgba(0,0,0,0.5)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Hlavička modalu */}
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-serif text-gold-400">Celkový souhrn výkladu</h2>
-              <button onClick={() => setSummaryModalOpen(false)} className="text-gray-400 hover:text-gold-400 transition-colors">
+              <button
+                onClick={() => setSummaryModalOpen(false)}
+                className="text-gray-400 hover:text-gold-400 transition-colors"
+              >
                 <X className="w-6 h-6" />
               </button>
             </div>
+
             {visibleCards.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-gray-400">Zatím nebyly vyloženy žádné karty.</p>
               </div>
             ) : (
               <div className="space-y-6">
-                <div className="rounded-2xl border border-gold-500/20 bg-mystic-900/40 p-5">
-                  <h3 className="mb-3 font-serif text-xl text-gold-300">Příběh výkladu</h3>
-                  <p className="text-gray-300 leading-relaxed whitespace-pre-line">
-                    {selectedSpread
-                      ? `${selectedSpread.description} Každá odkrytá karta přidává další vrstvu do společného obrazu vaší situace. Níže najdete jak jednotlivé významy, tak souvislé vyprávění, které z nich vzniká.`
-                      : 'Každá odkrytá karta přidává další vrstvu do společného obrazu vaší situace.'}
-                  </p>
-                </div>
-
+                {/* ── Jednotlivé karty (timeline) ─────────────────────────────── */}
                 <div className="max-w-none space-y-5">
                   {visibleCards.map((pos, index) => {
                     const cardData = getCardSummary(pos);
                     if (!cardData) return null;
-                    
                     return (
-                      <div key={pos.id} className="relative pl-6 border-l-2 border-gold-500/50 mb-4 pb-4">
+                      <div
+                        key={pos.id}
+                        className="relative pl-6 border-l-2 border-gold-500/50 mb-4 pb-4"
+                      >
                         <div className="absolute -left-3 top-0 w-5 h-5 rounded-full bg-gold-500 flex items-center justify-center">
                           <span className="text-mystic-900 text-xs font-bold">{index + 1}</span>
                         </div>
@@ -430,11 +332,78 @@ export const Reading: React.FC = () => {
                   })}
                 </div>
 
-                <div className="rounded-2xl border border-gold-500/20 bg-mystic-900/40 p-5">
-                  <h3 className="mb-3 font-serif text-xl text-gold-300">Souvislý narativ</h3>
-                  <p className="text-gray-300 leading-relaxed whitespace-pre-line">
-                    {buildReadingStory()}
-                  </p>
+                {/* ── AI Narativní výklad ──────────────────────────────────────── */}
+                <div className="rounded-2xl border border-gold-500/30 bg-mystic-900/50 p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <Wand2 className="w-5 h-5 text-gold-400" />
+                      <h3 className="font-serif text-xl text-gold-300">Výklad karet</h3>
+                    </div>
+                    {/* Tlačítko pro regeneraci */}
+                    {(aiState.status === 'done' || aiState.status === 'error') && (
+                      <button
+                        onClick={handleGenerateAI}
+                        className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gold-400 transition-colors px-2 py-1 rounded-lg hover:bg-mystic-700/50"
+                        title="Vygenerovat nový výklad"
+                      >
+                        <RefreshCw className="w-3.5 h-3.5" />
+                        Nový výklad
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Stavy AI výkladu */}
+                  {aiState.status === 'idle' && (
+                    <div className="text-center py-6">
+                      <button
+                        onClick={handleGenerateAI}
+                        className="flex items-center gap-2 mx-auto px-5 py-2.5 bg-gold-500/20 hover:bg-gold-500/30 border border-gold-500/40 text-gold-300 rounded-xl font-serif transition-all"
+                      >
+                        <Wand2 className="w-4 h-4" />
+                        Vyložit příběh karet
+                      </button>
+                    </div>
+                  )}
+
+                  {aiState.status === 'loading' && (
+                    <div className="flex flex-col items-center py-8 gap-4">
+                      {/* Animovaná mystická ikonka */}
+                      <div className="relative w-12 h-12">
+                        <div className="absolute inset-0 rounded-full border-2 border-gold-500/30 animate-ping" />
+                        <div className="absolute inset-0 rounded-full border-2 border-gold-400/60 animate-spin" style={{ animationDuration: '3s' }} />
+                        <Wand2 className="absolute inset-0 m-auto w-5 h-5 text-gold-400" />
+                      </div>
+                      <p className="text-gold-400/70 font-serif text-sm animate-pulse">
+                        Thothova moudrost promlouvá…
+                      </p>
+                    </div>
+                  )}
+
+                  {aiState.status === 'done' && (
+                    <div>
+                      <p className="text-gray-200 leading-relaxed whitespace-pre-line text-[0.97rem]">
+                        {aiState.narrative}
+                      </p>
+                      {aiState.isAI && (
+                        <div className="mt-4 flex items-center gap-1.5 text-xs text-gray-500">
+                          <Wand2 className="w-3 h-3" />
+                          <span>Vygenerováno AI na základě Crowleyho Thoth tarotu</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {aiState.status === 'error' && (
+                    <div>
+                      <div className="mb-3 text-xs text-amber-400/70 flex items-center gap-1.5">
+                        <span>⚠</span>
+                        <span>AI výklad není dostupný — zobrazuji základní přehled karet.</span>
+                      </div>
+                      <p className="text-gray-300 leading-relaxed whitespace-pre-line text-[0.95rem] font-mono text-sm">
+                        {aiState.fallback}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
